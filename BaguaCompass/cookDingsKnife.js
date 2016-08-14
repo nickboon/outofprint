@@ -1,3 +1,4 @@
+/* requires points perspective drawing colours */
 (function (app) {
 	// config
 	var	defaultLineColour = '#000000',
@@ -8,9 +9,12 @@
 		perspective,
 		drawing,
 		primitives,		
-		colours  = app.createColourObject();	
-	
+		colours  = app.createColourObject(),		
 	// module variables	
+		getNearestZFromArray = app.createPointsObject().getNearestZFromArray,
+		createLine,
+		createCurve,
+		createFill,
 		points = [
 			{x: -50, y: 30, z: 0},		// 0 start curve
 			{x: 80, y: 30, z: 0},		// 1 control 1
@@ -29,7 +33,7 @@
 			points: handlePoints.concat([points[0],points[1],points[2],points[3]]),
 			
 			getNearestZ: function getNearestZ() {
-				return primitives.getNearestZFromArray(points);
+				return getNearestZFromArray(points);
 			},
 			
 			draw: function (context) {
@@ -67,28 +71,28 @@
 		alpha = alpha || defaultAlpha;
 	
 		return [			
-			primitives.createLine(points[3], points[4], lineColour, alpha),
-			primitives.createLine(points[4], points[5], lineColour, alpha),
-			primitives.createLine(points[5], points[6], lineColour, alpha),
-			primitives.createLine(points[6], points[0], lineColour, alpha),
-			primitives.createLine(points[7], points[8], lineColour, alpha),
-			primitives.createLine(points[8], points[9], lineColour, alpha),
-			primitives.createLine(points[9], points[0], lineColour, alpha),
-			primitives.createLine(points[3], points[7], lineColour, alpha),
-			primitives.createLine(points[4], points[7], lineColour, alpha),
-			primitives.createLine(points[5], points[8], lineColour, alpha),
-			primitives.createLine(points[6], points[9], lineColour, alpha),
-			primitives.createLine(points[6], points[9], lineColour, alpha),
-			primitives.createCurve(
+			createLine(points[3], points[4], lineColour, alpha),
+			createLine(points[4], points[5], lineColour, alpha),
+			createLine(points[5], points[6], lineColour, alpha),
+			createLine(points[6], points[0], lineColour, alpha),
+			createLine(points[7], points[8], lineColour, alpha),
+			createLine(points[8], points[9], lineColour, alpha),
+			createLine(points[9], points[0], lineColour, alpha),
+			createLine(points[3], points[7], lineColour, alpha),
+			createLine(points[4], points[7], lineColour, alpha),
+			createLine(points[5], points[8], lineColour, alpha),
+			createLine(points[6], points[9], lineColour, alpha),
+			createLine(points[6], points[9], lineColour, alpha),
+			createCurve(
 				points[0],
 				points[1],
 				points[2],
 				points[3], lineColour, alpha
 			),
-			primitives.createFill([points[7], points[4], points[5], points[8]], fillColour),
-			primitives.createFill([points[3], points[7], points[4]], fillColour),
-			primitives.createFill([points[8], points[5], points[6], points[9]], fillColour),
-			primitives.createFill([points[9], points[6], points[0]], fillColour),
+			createFill([points[7], points[4], points[5], points[8]], fillColour),
+			createFill([points[3], points[7], points[4]], fillColour),
+			createFill([points[8], points[5], points[6], points[9]], fillColour),
+			createFill([points[9], points[6], points[0]], fillColour),
 			createSideFill([
 				points[4],
 				points[5],
@@ -107,7 +111,9 @@
 		perspective = p;
 		drawing = app.createDrawingObject(perspective);
 		primitives = app.createPrimitivesObject(drawing);	
-		//colours = app.createColourObject();		
+		createLine = primitives.createLine;
+		createCurve = primitives.createCurve;
+		createFill = primitives.createFill;
 
 		return {
 			points: points,
