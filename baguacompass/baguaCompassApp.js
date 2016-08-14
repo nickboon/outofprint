@@ -70,10 +70,22 @@
 	app.run = function () {
 		var diagram = app.createDefaultFullScreenDiagram(),
 			perspective = diagram.perspective, 
-			solidsList = createSolidsList(perspective),
-			transformer = app.createDirectedRotationTransformer(cube.points[6]);
+			solidsList = createSolidsList(perspective);
 			
-		diagram.addSolids(solidsList);
-		diagram.stage.setTransformer(transformer);
+		function getRandomNumberBetween(min, max) {
+			return Math.floor(Math.random()*(max-min+1)+min);
+		}		
+				
+		function changeGua() {
+			var transformer,
+			n;
+			
+			n = getRandomNumberBetween(0, 7);
+			transformer = app.createDirectedRotationTransformer(cube.points[n]);
+			diagram.stage.setTransformer(transformer);			
+		}
+		
+		diagram.addSolids(solidsList);				
+		window.setInterval(changeGua, 5000);		
 	}		
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));
