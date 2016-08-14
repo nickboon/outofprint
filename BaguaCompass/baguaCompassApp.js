@@ -1,4 +1,7 @@
-/* required diagrams, points, primitives, shapes, solids, fakeSpheres, cookDingsKnife */(function (app) {
+/* required diagrams, points, primitives, shapes, solids, fakeSpheres, cookDingsKnife */
+(function (app) {
+	var cube;
+	
 	function getBagua() {
 		return [
 			'☰',	// front centre
@@ -42,12 +45,13 @@
 			primitives = app.createPrimitivesObject(drawing),			
 			solids = app.createSolidsObject(primitives),
 			spheres = app.createFakeSpheresObject(perspective),
-			cube = solids.createHexahedron(),		
 			createdSolids = [
 				app.createCookDingsKnife(perspective),
 				spheres.create({x: 0, y: 0, z: 0}, 141.42135623730950488016887242097)
 			];
 		
+		cube = solids.createHexahedron();		
+			
 		return createdSolids.concat(
 			createLabelsForCubeVertices(cube.points, primitives, shapes)		
 		);
@@ -63,9 +67,13 @@
 	app.run = function () {
 		var diagram = app.createDefaultFullScreenDiagram(),
 			perspective = diagram.perspective, 
-			solidsList = createSolidsList(perspective);
+			solidsList = createSolidsList(perspective)
+			transformer = app.createAutoYRotationTransformer();
 			
 		diagram.addSolids(solidsList);
+		diagram.stage.setTransformer(transformer);
 	}	
+	
+	
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));
 
