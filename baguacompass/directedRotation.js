@@ -6,7 +6,7 @@
 		angle = transformation.angle,
 		angleX = 0,
 		angleY = 0,
-		margin = 1.3,
+		margin = 2,
 		mover;
 	
 	function setAngles() {			
@@ -30,7 +30,7 @@
 	
 	function isPointAtFront() {
 		return mover.x < -margin && mover.x > margin 
-			&& mover.y < -margin && mover.y > margin;
+			&& mover.y < -margin && mover.y > margin
 	}
 	
 	function rotateUntillPointMovesToFront(points) {

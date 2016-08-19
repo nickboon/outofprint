@@ -1,91 +1,34 @@
 
-/* required diagrams, points, primitives, shapes, solids, fakeSpheres, cookDingsKnife */
+/* required diagrams, shapes, bagua, fakeSpheres, cookDingsKnife */
 (function (app) {
-	var cube,
-		radius = 141.42135623730950488016887242097;
-	
-	function getBagua() {
-		return [
-			'☰',	// front centre
-			'☱',	// front right
-			'☳',	// back right
-			'☲',	// front bottom
-			'☴',	// front left
-			'☵',	// back top
-			'☷',	// back centre
-			'☶'	// back left
-		];
-	}
-	
-	function createLabelsForCubeVertices(points, primitives, shapes) {
-		var solids = [],
-			labels = getBagua(),
-			i,
-			copy = app.createPointsObject().copy;
-			
-		for (i = points.length - 1; i >= 0; i -= 1)
-		{
-			primitive = (
-				shapes.createLabel(
-					labels[i], 
-					//copy(points[i]),
-					points[i],
-					'#000000',
-					.5,
-					null,
-					true
-				)
-			);
-			solids.push(primitives.toSolid(primitive))
-		}
-				
-		return solids;
-	}	
-
+	var diagram,
+		radius = 141.42135623730950488016887242097,
+		baguaSphere;
+		
 	function createSolidsList(perspective) {
-		var drawing = app.createDrawingObject(perspective),
-			shapes = app.createShapesObject(drawing),
-			primitives = app.createPrimitivesObject(drawing),			
-			solids = app.createSolidsObject(primitives),
-			spheres = app.createFakeSpheresObject(perspective),
-			createdSolids = [
-				app.createCookDingsKnife(perspective),
-				spheres.create({x: 0, y: 0, z: 0}, radius)
-			];
+		var	spheres = app.createFakeSpheresObject(perspective);
 		
-		cube = solids.createHexahedron();		
+		return [
+			app.createCookDingsKnife(perspective),
+			spheres.create({x: 0, y: 0, z: 0}, radius),
+			baguaSphere = app.createBaguaSphere(perspective, 200)
+		];	
+	}
+	
+	function getRandomNumberBetween(min, max) {
+		return Math.floor(Math.random() * (max - min + 1) + min);
+	}		
 			
-		return createdSolids.concat(
-			createLabelsForCubeVertices(cube.points, primitives, shapes)		
-		);
-	}
-	
-	function setCanvas(width, height) {
-		var canvas = document.getElementById('canvas');
-		canvas.width  = width;
-		canvas.height = height
-		return canvas;
-	}
-	
 	app.run = function () {
-		var diagram = app.createDefaultFullScreenDiagram(),
-			perspective = diagram.perspective, 
-			solidsList = createSolidsList(perspective);
+		var diagram = app.createDefaultFullScreenDiagram();
 			
-		function getRandomNumberBetween(min, max) {
-			return Math.floor(Math.random()*(max-min+1)+min);
-		}		
-				
-		function changeGua() {
+		diagram.addSolids(createSolidsList(diagram.perspective));		
+		window.setInterval(function () {
 			var transformer,
-			n;
+				randomIndex = getRandomNumberBetween(0, 7);
 			
-			n = getRandomNumberBetween(0, 7);
-			transformer = app.createDirectedRotationTransformer(cube.points[n]);
+			transformer = app.createDirectedRotationTransformer(baguaSphere.points[randomIndex]);
 			diagram.stage.setTransformer(transformer);			
-		}
-		
-		diagram.addSolids(solidsList);				
-		window.setInterval(changeGua, 5000);		
+		}, 5000);		
 	}		
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));
