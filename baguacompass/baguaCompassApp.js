@@ -7,7 +7,8 @@
 	function createSolidsList(perspective) {
 		var lineColour = isDisplayVersion ? '#ff0000': '#ff0000',
 			fillColour = isDisplayVersion ? '#0000000': '#ffffff',
-			guaColour =  isDisplayVersion ? '#00ff00': '#000000',
+			guaYinColour =  isDisplayVersion ? '#00ff00': '#000000',
+			guaYangColour =  isDisplayVersion ? '#ff0000': '#ff0000',
 			bladeEdgeColour =  isDisplayVersion ? '#00ff00': '#000000',
 			cookDingsKnife = app.createCookDingsKnife(perspective,
 				lineColour, fillColour),
@@ -20,7 +21,8 @@
 		return [
 			cookDingsKnife,
 			//spheres.create({x: 0, y: 0, z: 0,}, radius, lineColour, fillColour),
-			baguaSphere = app.createBaguaSphere(perspective, 200, guaColour)
+			baguaSphere = app.createBaguaSphere(perspective, 200,
+				guaYinColour, guaYangColour)
 		];	
 	}
 	

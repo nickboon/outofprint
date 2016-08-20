@@ -29,7 +29,7 @@
 		return {x: 0, y: 0, z: -zDistance };
 	}
 	
-	function createPrimitives(lineColour,  alpha) {
+	function createPrimitives(yinColour, yangColour,  alpha) {
 		var kun,
 			qian,
 			kan,
@@ -64,32 +64,32 @@
 			yinMiddleLeft = createLine(
 				farMiddleLeft,
 				copyAndShift(farMiddleLeft, 'x', thirdWidth),
-				lineColour,  alpha
+				yinColour,  alpha
 			);					
 			yinMiddleRight = createLine(
 				farMiddleRight,
 				copyAndShift(farMiddleRight, 'x', -thirdWidth),
-				lineColour,  alpha
+				yinColour,  alpha
 			);					
 			yinTopLeft = createLine(
 				copyAndShift(yinMiddleLeft.points[0], 'y', -halfWidth),
 				copyAndShift(yinMiddleLeft.points[1], 'y', -halfWidth),
-				lineColour,  alpha
+				yinColour,  alpha
 			);					
 			yinTopRight = createLine(
 				copyAndShift(yinMiddleRight.points[0], 'y', -halfWidth),
 				copyAndShift(yinMiddleRight.points[1], 'y', -halfWidth),
-				lineColour,  alpha
+				yinColour,  alpha
 			);
 			yinBottomLeft = createLine(
 				copyAndShift(yinMiddleLeft.points[0], 'y', halfWidth),
 				copyAndShift(yinMiddleLeft.points[1], 'y', halfWidth),
-				lineColour,  alpha
+				yinColour,  alpha
 			);	
 			yinBottomRight = createLine(
 				copyAndShift(yinMiddleRight.points[0], 'y', halfWidth),
 				copyAndShift(yinMiddleRight.points[1], 'y', halfWidth),
-				lineColour,  alpha
+				yinColour,  alpha
 			);				
 		}
 		
@@ -97,17 +97,17 @@
 			yangMiddle = createLine(
 				copyAndShift(farMiddleLeft, 'z', fullZDistance),
 				copyAndShift(farMiddleRight, 'z', fullZDistance),
-				lineColour,  alpha
+				yangColour,  alpha
 			);	
 			yangTop = createLine(
 				copyAndShift(yangMiddle.points[0], 'y', halfWidth),
 				copyAndShift(yangMiddle.points[1], 'y', halfWidth),
-				lineColour,  alpha
+				yangColour,  alpha
 			);	
 			yangBottom = createLine(
 				copyAndShift(yangMiddle.points[0], 'y', -halfWidth),
 				copyAndShift(yangMiddle.points[1], 'y', -halfWidth),
-				lineColour,  alpha
+				yangColour,  alpha
 			);
 		}
 				
@@ -135,22 +135,22 @@
 		lines.push(createLine(
 			copyAndRotate(yangTop.points[0], 'x', yangLineTranslationAngle),
 			copyAndRotate(yangTop.points[1], 'x', yangLineTranslationAngle),
-				lineColour,  alpha)
+				yangColour,  alpha)
 		);
 		lines.push(createLine(
 			copyAndRotate(yinMiddleLeft.points[0], 'x', yinLineTRanslationAngle),
 			copyAndRotate(yinMiddleLeft.points[1], 'x', yinLineTRanslationAngle),
-				lineColour,  alpha)
+				yangColour,  alpha)
 		);
 		lines.push(createLine(
 			copyAndRotate(yinMiddleRight.points[0], 'x', yinLineTRanslationAngle),
 			copyAndRotate(yinMiddleRight.points[1], 'x', yinLineTRanslationAngle),
-				lineColour,  alpha)
+				yangColour,  alpha)
 		);
 		lines.push(createLine(
 			copyAndRotate(yangBottom.points[0], 'x', yangLineTranslationAngle),
 			copyAndRotate(yangBottom.points[1], 'x', yangLineTranslationAngle),
-				lineColour,  alpha)
+				yangColour,  alpha)
 		);
 		
 		
@@ -158,27 +158,27 @@
 		lines.push(createLine(
 			copyAndRotate(yinTopLeft.points[0], 'x', yangLineTranslationAngle),
 			copyAndRotate(yinTopLeft.points[1], 'x', yangLineTranslationAngle),
-				lineColour,  alpha)
+				yinColour,  alpha)
 		);
 		lines.push(createLine(
 			copyAndRotate(yinTopRight.points[0], 'x', yangLineTranslationAngle),
 			copyAndRotate(yinTopRight.points[1], 'x', yangLineTranslationAngle),
-				lineColour,  alpha)
+				yinColour,  alpha)
 		);
 		lines.push(createLine(
 			copyAndRotate(yangMiddle.points[0], 'x', yinLineTRanslationAngle),
 			copyAndRotate(yangMiddle.points[1], 'x', yinLineTRanslationAngle),
-				lineColour,  alpha)
+				yinColour,  alpha)
 		);
 		lines.push(createLine(
 			copyAndRotate(yinBottomLeft.points[0], 'x', yangLineTranslationAngle),
 			copyAndRotate(yinBottomLeft.points[1], 'x', yangLineTranslationAngle),
-				lineColour,  alpha)
+				yinColour,  alpha)
 		);
 		lines.push(createLine(
 			copyAndRotate(yinBottomRight.points[0], 'x', yangLineTranslationAngle),
 			copyAndRotate(yinBottomRight.points[1], 'x', yangLineTranslationAngle),
-			lineColour,  alpha)
+			yinColour,  alpha)
 		);
 		
 		qian = copyAndRotate(kun, 'x', Math.PI);
@@ -209,77 +209,77 @@
 		newLines.push(createLine(
 			 copyAndShift(yangBottom.points[0], 'z', -fullZDistance),
 			 copyAndShift(yangBottom.points[1], 'z', -fullZDistance),
-			 lineColour,  alpha)
+			 yinColour,  alpha)
 			
 		);
 		newLines.push(createLine(
 			copy(yinMiddleLeft.points[0]),
 			copy(yinMiddleLeft.points[1]),
-			lineColour,  alpha)
+			yinColour,  alpha)
 		);
 		newLines.push(createLine(
 			copy(yinMiddleRight.points[0]),
 			copy(yinMiddleRight.points[1]),
-			lineColour,  alpha)
+			yinColour,  alpha)
 		);
 		newLines.push(createLine(
 			copy(yinBottomLeft.points[0]),
 			copy(yinBottomLeft.points[1]),
-			lineColour,  alpha)
+			yinColour,  alpha)
 		);
 		newLines.push(createLine(
 			copy(yinBottomRight.points[0]),
 			copy(yinBottomRight.points[1]),
-			lineColour,  alpha)
+			yinColour,  alpha)
 		);
 				
 		// ☱ back centre
 		newLines.push(createLine(
 			copyAndShift(yinTopLeft.points[0], 'z', fullZDistance),
 			copyAndShift(yinTopLeft.points[1], 'z', fullZDistance),
-			lineColour,  alpha)
+			yangColour,  alpha)
 		);
 		newLines.push(createLine(
 			copyAndShift(yinTopRight.points[0], 'z', fullZDistance),
 			copyAndShift(yinTopRight.points[1], 'z', fullZDistance),
-			lineColour,  alpha)
+			yangColour,  alpha)
 		);
 		newLines.push(createLine(
 			copy(yangMiddle.points[0]),
 			copy(yangMiddle.points[1]),
-			lineColour,  alpha)
+			yangColour,  alpha)
 		);
 		newLines.push(createLine(
 			copy(yangTop.points[0]),
 			copy(yangTop.points[1]),
-			lineColour,  alpha)
+			yangColour,  alpha)
 		);
 
 		// ☳ top back
 		newLines.push(createLine(
 			copyAndRotate(yangTop.points[0], 'x', yangLineTranslationAngle),
 			copyAndRotate(yangTop.points[1], 'x', yangLineTranslationAngle),
-			lineColour,  alpha)
+			yinColour,  alpha)
 		);
 		newLines.push(createLine(
 			copyAndRotate(yinMiddleLeft.points[0], 'x', yinLineTRanslationAngle),
 			copyAndRotate(yinMiddleLeft.points[1], 'x', yinLineTRanslationAngle),
-			lineColour,  alpha)
+			yinColour,  alpha)
 		);
 		newLines.push(createLine(
 			copyAndRotate(yinMiddleRight.points[0], 'x', yinLineTRanslationAngle),
 			copyAndRotate(yinMiddleRight.points[1], 'x', yinLineTRanslationAngle),
-			lineColour,  alpha)
+			yinColour,  alpha)
 		);
 		newLines.push(createLine(
 			copyAndRotate(yinBottomLeft.points[0], 'x', yinLineTRanslationAngle),
 			copyAndRotate(yinBottomLeft.points[1], 'x', yinLineTRanslationAngle),
-			lineColour,  alpha)
+			yinColour,  alpha)
 		);
 		newLines.push(createLine(
 			copyAndRotate(yinBottomRight.points[0], 'x', yinLineTRanslationAngle),
 			copyAndRotate(yinBottomRight.points[1], 'x', yinLineTRanslationAngle),
-			lineColour,  alpha)
+			yinColour,  alpha)
 		);
 		
 		
@@ -287,22 +287,22 @@
 		newLines.push(createLine(
 			copyAndRotate(yangTop.points[0], 'x', yinLineTRanslationAngle),
 			copyAndRotate(yangTop.points[1], 'x', yinLineTRanslationAngle),
-			lineColour,  alpha)
+			yangColour,  alpha)
 		);
 		newLines.push(createLine(
 			copyAndRotate(yangMiddle.points[0], 'x', yinLineTRanslationAngle),
 			copyAndRotate(yangMiddle.points[1], 'x', yinLineTRanslationAngle),
-			lineColour,  alpha)
+			yangColour,  alpha)
 		);
 		newLines.push(createLine(
 			copyAndRotate(yinBottomLeft.points[0], 'x', yangLineTranslationAngle),
 			copyAndRotate(yinBottomLeft.points[1], 'x', yangLineTranslationAngle),
-			lineColour,  alpha)
+			yangColour,  alpha)
 		);
 		newLines.push(createLine(
 			copyAndRotate(yinBottomRight.points[0], 'x', yangLineTranslationAngle),
 			copyAndRotate(yinBottomRight.points[1], 'x', yangLineTranslationAngle),
-			lineColour,  alpha)
+			yangColour,  alpha)
 		);
 		
 		gen = getFrontPoint();
@@ -323,7 +323,7 @@
 
 		
 	// create and return API for this module
-	app.createBaguaSphere = function (p, c, lineColour, alpha) {		
+	app.createBaguaSphere = function (p, c, yinColour, yangColour, alpha) {		
 		cubeWidth = c;
 		spaceDiagonal = Math.sqrt(3) * cubeWidth,
 		faceDiagonal = Math.sqrt(2) * cubeWidth,
@@ -339,7 +339,7 @@
 		fullZDistance = zDistance * 2;
 		
 		return {
-			primitives: createPrimitives(lineColour, alpha),
+			primitives: createPrimitives(yinColour, yangColour, alpha),
 			points: points
 		};
 	};
