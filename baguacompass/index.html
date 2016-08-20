@@ -4,6 +4,8 @@
 	<meta name="viewport" content="initial-scale=1">
 	<title>Bagua Compass</title>
 	<link rel="icon" href="../swallow.gif">	
+	<link rel="stylesheet" href="../style.css">
+	<link rel="stylesheet" href="../hdmipiStyle.css">
 
 	<!-- modules -->
 	<script src="../../DiagramApp/points.js"></script>      
@@ -29,7 +31,8 @@
 	
 	<script>
 		window.onload = function () {
-			window.DIAGRAM_APP.run();			
+			var isDisplayVersion = true;
+			window.DIAGRAM_APP.run(isDisplayVersion);			
 		};
  	</script>
 </body>

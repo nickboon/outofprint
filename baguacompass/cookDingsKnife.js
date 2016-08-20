@@ -2,8 +2,8 @@
 (function (app) {
 	// config
 	var	defaultLineColour = '#000000',
-	defaultFillColour = '#FFFFFF',
-	defaultAlpha = .8,
+		defaultFillColour = '#FFFFFF',
+		defaultAlpha = .8,
 	
 	// objects from dependancies			
 		perspective,
@@ -28,6 +28,15 @@
 			{x: -50, y: -10, z: -8}		// 9
 		];
 
+	function createBladeEdge(lineColour, alpha) {
+		return createCurve(
+			points[0],
+			points[1],
+			points[2],
+			points[3], lineColour, alpha
+		);
+	}
+		
 	function createSideFill(handlePoints, colour, alpha)	{
 		return {
 			points: handlePoints.concat([points[0],points[1],points[2],points[3]]),
@@ -64,13 +73,14 @@
 			} 	
 		}		
 	}
-		
+	
 	function createPrimitives(lineColour, fillColour,  alpha) {
 		lineColour = lineColour || defaultLineColour;
 		fillColour = fillColour || defaultFillColour;
 		alpha = alpha || defaultAlpha;
 	
 		return [			
+			createBladeEdge(lineColour, alpha),
 			createLine(points[3], points[4], lineColour, alpha),
 			createLine(points[4], points[5], lineColour, alpha),
 			createLine(points[5], points[6], lineColour, alpha),
@@ -83,12 +93,6 @@
 			createLine(points[5], points[8], lineColour, alpha),
 			createLine(points[6], points[9], lineColour, alpha),
 			createLine(points[6], points[9], lineColour, alpha),
-			createCurve(
-				points[0],
-				points[1],
-				points[2],
-				points[3], lineColour, alpha
-			),
 			createFill([points[7], points[4], points[5], points[8]], fillColour),
 			createFill([points[3], points[7], points[4]], fillColour),
 			createFill([points[8], points[5], points[6], points[9]], fillColour),
@@ -117,7 +121,8 @@
 
 		return {
 			points: points,
-			primitives: createPrimitives(lineColour, fillColour, alpha)			
+			primitives: createPrimitives(lineColour, fillColour, alpha),
+			createBladeEdge: createBladeEdge			
 		};
 	};
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));
