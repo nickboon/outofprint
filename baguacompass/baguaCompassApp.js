@@ -1,13 +1,14 @@
 
 /* required diagrams, bagua, fakeSpheres, cookDingsKnife */
 (function (app) {
-	var isDisplayVersion,
+	var tranformations,
+		isDisplayVersion,
 		radius = 141.42135623730950488016887242097,			
 		baguaSphere,
 		guaYinColour,
 		guaYangColour;
 		
-	function createSolidsList(perspective) {
+	function createTransformingSolids(perspective) {
 		var lineColour = isDisplayVersion ? '#ff0000': '#ff0000',
 			fillColour = isDisplayVersion ? '#0000000': '#ffffff',
 			bladeEdgeColour =  isDisplayVersion ? '#00ff00': '#000000',
@@ -20,7 +21,7 @@
 		
 		return [
 			cookDingsKnife,
-			//spheres.create({x: 0, y: 0, z: 0,}, radius, bladeEdgeColour, fillColour),
+			spheres.create({x: 0, y: 0, z: 0,}, radius, bladeEdgeColour, fillColour),
 			baguaSphere = app.createBaguaSphere(perspective, 200,
 				guaYinColour, guaYangColour)
 		];	
@@ -29,41 +30,55 @@
 	function getRandomNumberBetween(min, max) {
 		return Math.floor(Math.random() * (max - min + 1) + min);
 	}		
-			
+		
+	function turnPoints90Cw(point) {
+		transformations.rotatePointAboutZ(point, Math.PI / 2);		
+	}
+
+	function turnSolids90Cw(solid) {
+		solid.points.forEach(turnPoints90Cw);
+	}
+	
 	app.run = function (i) {
-		var diagram = app.createDefaultFullScreenDiagram(),
-			guaDrawingFunctions,
+		var isDisplayVersion = i,	
+			diagram = app.createDefaultFullScreenDiagram(),
+			perspective = diagram.perspective,
 			canvas = app.createCanvasObject(),
 			center = canvas.getCenter(),
-			guaWidth = 160,
-			yOffset = radius + 100,
-			currentGuaPoint = {x: center.x - 100, y: center.y + yOffset},
-			nextGuaPoint = {x: center.x + 100, y: center.y + yOffset};
-			
-		isDisplayVersion = i;	
+			guaWidth = 100,
+			guaDisplayMarginX = 80,
+			guaDisplayMarginY = radius + 170,
+			currentGuaPoint = {x: - guaDisplayMarginX, y: guaDisplayMarginY, z: 0},
+			nextGuaPoint = {x:  + guaDisplayMarginX, y: guaDisplayMarginY, z: 0},
+			currentGua,
+			nextGua,
+			shiftHorizon = 200;
+
 		guaYinColour =  isDisplayVersion ? '#00ff00': '#000000';
 		guaYangColour = '#ff0000';
-		guaDrawingFunctions = app.createGuaDrawingFunctionsArray(
-			canvas, guaYinColour, guaYangColour, guaWidth);
-		diagram.addSolids(createSolidsList(diagram.perspective));
+		gua = app.createGuaObject(perspective, guaWidth, guaYinColour, guaYangColour);
+		currentGua = gua.buildKun(currentGuaPoint);
+		nextGua = gua.buildQian(nextGuaPoint);
+		transformingSolids = createTransformingSolids(perspective);
+		solids = transformingSolids.concat([currentGua, nextGua]);
+		transformations = app.createTransformationObject();
+		autoTransformer = transformations.createAutoYRotationTransformer(transformingSolids);
+		keyboardTransformer = transformations.createKeyboardIDrivenTransformer(transformingSolids);
+
+		solids.forEach(turnSolids90Cw);
+		perspective.shiftVanishingPointX(shiftHorizon);
 		
+		diagram.stage.addSolids(solids);
+		diagram.stage.setTransformers([keyboardTransformer]);
+
 				
 		window.setInterval(function () {
-			var transformer,
-				randomIndex = getRandomNumberBetween(0, 7);
+			// var randomIndex = getRandomNumberBetween(0, 7),
+				// directedTransformer = app.createDirectedRotationTransformer(
+					// transformingSolids, baguaSphere.points[randomIndex]
+				// );
 			
-			transformer = app.createDirectedRotationTransformer(
-				baguaSphere.points[randomIndex]
-			);
-			diagram.stage.setTransformer(transformer);
-			diagram.stage.setAnimationFunctions([
-				function() {
-					guaDrawingFunctions[0](currentGuaPoint);				
-				},
-				function () {
-					guaDrawingFunctions[1](nextGuaPoint);
-				}
-			]);
+			// diagram.stage.setTransformers([directedTransformer]);
 		}, 5000);		
 	}		
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));

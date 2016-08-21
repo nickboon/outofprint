@@ -1,6 +1,7 @@
 /* requires points transformation */
 (function (app) {
-	var transformation = app.createTransformationObject(),
+	var points = [],
+		transformation = app.createTransformationObject(),
 		rotateAboutX = transformation.rotatePointAboutX,
 		rotateAboutY = transformation.rotatePointAboutY,
 		angle = transformation.angle,
@@ -33,7 +34,7 @@
 			&& mover.y < -margin && mover.y > margin
 	}
 	
-	function rotateUntillPointMovesToFront(points) {
+	function rotateUntillPointMovesToFront() {
 		if (!isPointAtFront()) {
 			setAngles();
 			points.forEach(rotate);
@@ -41,9 +42,19 @@
 		}
 	}
 		
-	app.createDirectedRotationTransformer = function (pointToMove) {
-		mover = pointToMove;
+	function addPointsToTransformer(solid) {
+		points = points.concat(solid.points);
+	}
 
+	app.createDirectedRotationTransformer = function (solids, pointToMove) {
+			
+		if (solids === 'undefined') {
+			throw "You must an array of solids to be transformed when creating a transformer";
+		}
+			
+		solids.forEach(addPointsToTransformer);
+		mover = pointToMove;
+		
 		return {
 			transform: rotateUntillPointMovesToFront
 		};
