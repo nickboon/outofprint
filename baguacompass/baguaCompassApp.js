@@ -10,7 +10,7 @@
 		
 	function createTransformingSolids(perspective) {
 		var lineColour = isDisplayVersion ? '#ff0000': '#ff0000',
-			fillColour = isDisplayVersion ? '#0000000': '#ffffff',
+			fillColour = isDisplayVersion ? '#000000': '#ffffff',
 			bladeEdgeColour =  isDisplayVersion ? '#00ff00': '#000000',
 			cookDingsKnife = app.createCookDingsKnife(perspective,
 				lineColour, fillColour),
@@ -21,7 +21,7 @@
 		
 		return [
 			cookDingsKnife,
-			spheres.create({x: 0, y: 0, z: 0,}, radius, bladeEdgeColour, fillColour),
+			//spheres.create({x: 0, y: 0, z: 0,}, radius, bladeEdgeColour, fillColour),
 			baguaSphere = app.createBaguaSphere(perspective, 200,
 				guaYinColour, guaYangColour)
 		];	
@@ -30,15 +30,7 @@
 	function getRandomNumberBetween(min, max) {
 		return Math.floor(Math.random() * (max - min + 1) + min);
 	}		
-		
-	function turnPoints90Cw(point) {
-		transformations.rotatePointAboutZ(point, Math.PI / 2);		
-	}
-
-	function turnSolids90Cw(solid) {
-		solid.points.forEach(turnPoints90Cw);
-	}
-	
+			
 	app.run = function (i) {
 		var isDisplayVersion = i,	
 			diagram = app.createDefaultFullScreenDiagram(),
@@ -52,7 +44,7 @@
 			nextGuaPoint = {x:  + guaDisplayMarginX, y: guaDisplayMarginY, z: 0},
 			currentGua,
 			nextGua,
-			shiftHorizon = 200;
+			shiftHorizon = 300;
 
 		guaYinColour =  isDisplayVersion ? '#00ff00': '#000000';
 		guaYangColour = '#ff0000';
@@ -65,8 +57,7 @@
 		autoTransformer = transformations.createAutoYRotationTransformer(transformingSolids);
 		keyboardTransformer = transformations.createKeyboardIDrivenTransformer(transformingSolids);
 
-		solids.forEach(turnSolids90Cw);
-		perspective.shiftVanishingPointX(shiftHorizon);
+		perspective.shiftVanishingPointY(shiftHorizon);
 		
 		diagram.stage.addSolids(solids);
 		diagram.stage.setTransformers([keyboardTransformer]);
