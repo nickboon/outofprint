@@ -25,7 +25,12 @@
 			{x: -50, y: -10, z: 8},		// 6
 			{x: -150, y: -30, z: -10},	// 7 back
 			{x: -150, y: 0, z: -7},		// 8
-			{x: -50, y: -10, z: -8}		// 9
+			{x: -50, y: -10, z: -8},		// 9
+			// move the end 1px away
+			{x: -151, y: -30, z: 10},	// 10 front
+			{x: -151, y: 0, z: 7},		// 11
+			{x: -151, y: -30, z: -10},	// 12 back
+			{x: -151, y: 0, z: -7}		// 13
 		];
 
 	function createBladeEdge(lineColour, alpha) {
@@ -54,9 +59,12 @@
 					perspective.getScreenX(points[0]), 
 					perspective.getScreenY(points[0]));
 				context.bezierCurveTo(
-					perspective.getScreenX(points[1]), perspective.getScreenY(points[1]),
-					perspective.getScreenX(points[2]), perspective.getScreenY(points[2]),
-					perspective.getScreenX(points[3]), perspective.getScreenY(points[3])
+					perspective.getScreenX(points[1]), 
+					perspective.getScreenY(points[1]),
+					perspective.getScreenX(points[2]), 
+					perspective.getScreenY(points[2]),
+					perspective.getScreenX(points[3]), 
+					perspective.getScreenY(points[3])
 				);			
 				context.lineTo(
 					perspective.getScreenX(handlePoints[0]), 
@@ -93,7 +101,7 @@
 			createLine(points[5], points[8], lineColour, alpha),
 			createLine(points[6], points[9], lineColour, alpha),
 			createLine(points[6], points[9], lineColour, alpha),
-			createFill([points[7], points[4], points[5], points[8]], fillColour),
+			createFill([points[12], points[10], points[11], points[13]], fillColour),
 			createFill([points[3], points[7], points[4]], fillColour),
 			createFill([points[8], points[5], points[6], points[9]], fillColour),
 			createFill([points[9], points[6], points[0]], fillColour),
