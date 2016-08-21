@@ -21,7 +21,7 @@
 		
 		return [
 			cookDingsKnife,
-			//spheres.create({x: 0, y: 0, z: 0,}, radius, bladeEdgeColour, fillColour),
+			spheres.create({x: 0, y: 0, z: 0,}, radius, bladeEdgeColour, fillColour),
 			baguaSphere = app.createBaguaSphere(perspective, 200,
 				guaYinColour, guaYangColour)
 		];	
@@ -37,14 +37,14 @@
 			perspective = diagram.perspective,
 			canvas = app.createCanvasObject(),
 			center = canvas.getCenter(),
-			guaWidth = 100,
-			guaDisplayMarginX = 80,
-			guaDisplayMarginY = radius + 170,
+			guaWidth = 140,
+			guaDisplayMarginX = 120,
+			guaDisplayMarginY = radius + 240,
 			currentGuaPoint = {x: - guaDisplayMarginX, y: guaDisplayMarginY, z: 0},
 			nextGuaPoint = {x:  + guaDisplayMarginX, y: guaDisplayMarginY, z: 0},
 			currentGua,
 			nextGua,
-			shiftHorizon = -100
+			shiftHorizon = -200
 
 		guaYinColour =  isDisplayVersion ? '#00ff00': '#000000';
 		guaYangColour = '#ff0000';
@@ -60,16 +60,16 @@
 		perspective.shiftVanishingPointY(shiftHorizon);
 		
 		diagram.stage.addSolids(solids);
-		diagram.stage.setTransformers([keyboardTransformer]);
+		//diagram.stage.setTransformers([keyboardTransformer]);
 
 				
 		window.setInterval(function () {
-			// var randomIndex = getRandomNumberBetween(0, 7),
-				// directedTransformer = app.createDirectedRotationTransformer(
-					// transformingSolids, baguaSphere.points[randomIndex]
-				// );
-			
-			// diagram.stage.setTransformers([directedTransformer]);
+			 //~ var randomIndex = getRandomNumberBetween(0, 7),
+				 //~ directedTransformer = app.createDirectedRotationTransformer(
+					 //~ transformingSolids, baguaSphere.points[randomIndex]
+				 //~ );
+			//~ 
+			 //~ diagram.stage.setTransformers([directedTransformer]);
 		}, 5000);		
 	}		
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));
