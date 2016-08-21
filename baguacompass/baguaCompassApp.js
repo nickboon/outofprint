@@ -44,7 +44,7 @@
 			nextGuaPoint = {x:  + guaDisplayMarginX, y: guaDisplayMarginY, z: 0},
 			currentGua,
 			nextGua,
-			shiftHorizon = 300;
+			shiftHorizon = -100
 
 		guaYinColour =  isDisplayVersion ? '#00ff00': '#000000';
 		guaYangColour = '#ff0000';
