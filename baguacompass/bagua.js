@@ -195,6 +195,12 @@
 			transformations.rotatePointAboutX(point, tilt); 			
 		}
 				
+		function rotateToPreviousEdge(point) {
+			transformations.rotatePointAboutX(point, -tilt); 			
+			transformations.rotatePointAboutY(point, -Math.PI / 2); 			
+			transformations.rotatePointAboutX(point, tilt); 			
+		}		
+				
 		for (i = lines.length - 1; i >= 0; i -= 1) {
 			points = points.concat(lines[i].points);
 		}
@@ -317,6 +323,8 @@
 		for (i = newLines.length - 1; i >= 0; i -= 1) {
 			points = points.concat(newLines[i].points);
 		}
+			
+		points.forEach(rotateToPreviousEdge);	
 			
 		return  lines.concat(newLines);
 	}

@@ -60,7 +60,7 @@
 		perspective.shiftVanishingPointY(shiftHorizon);
 		
 		diagram.stage.addSolids(solids);
-		//diagram.stage.setTransformers([keyboardTransformer]);
+		diagram.stage.setTransformers([keyboardTransformer]);
 
 				
 		window.setInterval(function () {
