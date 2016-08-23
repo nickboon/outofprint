@@ -75,13 +75,13 @@
 		solids = transformingSolids.concat([currentGua, nextGua]);
 		knife = solids[0];
 		bagua = solids[2];				
-		knifeKeyBoardTransformer = transformations.createKeyboardDrivenTransformer([knife]);
 		
 		perspective.shiftVanishingPointY(shiftHorizon);		
 		diagram.stage.addSolids(solids);
 
-		baguaTransformer = transformations.createAutoYRotationTransformer([bagua]);
-		diagram.stage.setTransformers([baguaTransformer]);
+		//baguaTransformer = transformations.createKeyboardDrivenTransformer([bagua]);
+		firstTransformer = transformations.createKeyboardDrivenTransformer([bagua]);
+		diagram.stage.setTransformers([firstTransformer]);
 		
 		window.setInterval(function () {
 						
@@ -93,20 +93,18 @@
 					//primitive.setColour('#00ff00');					
 				//}
 			});
-			  var randomIndex = getRandomNumberBetween(0, 7);
-				 // directedTransformer = app.createDirectedRotationTransformer(
-					 // transformingSolids, baguaSphere.points[randomIndex]
-				  // );
+			var randomIndex = getRandomNumberBetween(0, 7);
+			 // directedTransformer = app.createDirectedRotationTransformer(
+				 // transformingSolids, baguaSphere.points[randomIndex]
+			  // );
 
-				 var directedKnifeTransformer = app.createDirectedRotationTransformer(
-					  [knife], baguaSphere.points[randomIndex]
-				  );
+			 // var directedKnifeTransformer = app.createDirectedRotationTransformer(
+				  // [knife], baguaSphere.points[randomIndex]
+			  // );
 
 
-				  
-			  diagram.stage.setTransformers([directedKnifeTransformer, baguaTransformer]);
-			  
-			  	//var baguaKeyBoardTransformer = transformations.createKeyboardDrivenTransformer([bagua]);
+			//var secondTransformer = transformations.createKeyboardDrivenTransformer([knife]);
+			//diagram.stage.setTransformers([secondTransformer]);			  
 		}, 10000);		
 	}		
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));

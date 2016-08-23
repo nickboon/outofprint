@@ -241,13 +241,13 @@
 				
 		// ☱ back centre
 		newLines.push(createLine(
-			copyAndShift(yinTopLeft.points[0], 'z', fullZDistance),
-			copyAndShift(yinTopLeft.points[1], 'z', fullZDistance),
+			copyAndShift(yinBottomLeft.points[0], 'z', fullZDistance),
+			copyAndShift(yinBottomLeft.points[1], 'z', fullZDistance),
 			yangColour,  alpha)
 		);
 		newLines.push(createLine(
-			copyAndShift(yinTopRight.points[0], 'z', fullZDistance),
-			copyAndShift(yinTopRight.points[1], 'z', fullZDistance),
+			copyAndShift(yinBottomRight.points[0], 'z', fullZDistance),
+			copyAndShift(yinBottomRight.points[1], 'z', fullZDistance),
 			yangColour,  alpha)
 		);
 		newLines.push(createLine(
@@ -256,15 +256,20 @@
 			yangColour,  alpha)
 		);
 		newLines.push(createLine(
-			copy(yangTop.points[0]),
-			copy(yangTop.points[1]),
+			copy(yangBottom.points[0]),
+			copy(yangBottom.points[1]),
 			yangColour,  alpha)
 		);
 
 		// ☳ top back
 		newLines.push(createLine(
-			copyAndRotate(yangTop.points[0], 'x', yangLineTranslationAngle),
-			copyAndRotate(yangTop.points[1], 'x', yangLineTranslationAngle),
+			copyAndRotate(yinTopLeft.points[0], 'x', yinLineTRanslationAngle),
+			copyAndRotate(yinTopLeft.points[1], 'x', yinLineTRanslationAngle),
+			yinColour,  alpha)
+		);
+		newLines.push(createLine(
+			copyAndRotate(yinTopRight.points[0], 'x', yinLineTRanslationAngle),
+			copyAndRotate(yinTopRight.points[1], 'x', yinLineTRanslationAngle),
 			yinColour,  alpha)
 		);
 		newLines.push(createLine(
@@ -285,6 +290,11 @@
 		newLines.push(createLine(
 			copyAndRotate(yinBottomRight.points[0], 'x', yinLineTRanslationAngle),
 			copyAndRotate(yinBottomRight.points[1], 'x', yinLineTRanslationAngle),
+			yinColour,  alpha)
+		);
+		newLines.push(createLine(
+			copyAndRotate(yangBottom.points[0], 'x', yangLineTranslationAngle),
+			copyAndRotate(yangBottom.points[1], 'x', yangLineTranslationAngle),
 			yinColour,  alpha)
 		);
 		
@@ -324,7 +334,7 @@
 			points = points.concat(newLines[i].points);
 		}
 			
-		points.forEach(rotateToPreviousEdge);	
+		//points.forEach(rotateToPreviousEdge);	
 			
 		return  lines.concat(newLines);
 	}
