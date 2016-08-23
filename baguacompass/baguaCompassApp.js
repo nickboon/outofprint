@@ -6,7 +6,20 @@
 		radius = 141.42135623730950488016887242097,			
 		baguaSphere,
 		guaYinColour,
-		guaYangColour;
+		guaYangColour,
+		transformations = app.createTransformationObject(),
+		rotateAboutX = transformations.rotatePointAboutX;
+		rotateAboutY = transformations.rotatePointAboutY;
+		
+		
+	function rotate(point) {
+		rotateAboutY(point, Math.PI / 2);
+		rotateAboutX(point, Math.PI * 0.4);
+	}	
+		
+	function setInitialOrientationsForKnife(knife) {
+		knife.points.forEach(rotate);		
+	}	
 		
 	function createTransformingSolids(perspective) {
 		var lineColour = isDisplayVersion ? '#ff0000': '#ff0000',
@@ -16,8 +29,11 @@
 				lineColour, fillColour),
 			spheres = app.createFakeSpheresObject(perspective);
 			
+			
 		cookDingsKnife.primitives[0] = cookDingsKnife.createBladeEdge(
 			bladeEdgeColour);	
+		
+		setInitialOrientationsForKnife(cookDingsKnife);
 		
 		return [
 			cookDingsKnife,
@@ -44,7 +60,11 @@
 			nextGuaPoint = {x:  + guaDisplayMarginX, y: guaDisplayMarginY, z: 0},
 			currentGua,
 			nextGua,
-			shiftHorizon = -200
+			shiftHorizon = -200,
+			knife,
+			bagua,
+			knifeKeyBoardTransformer;
+			
 
 		guaYinColour =  isDisplayVersion ? '#00ff00': '#000000';
 		guaYangColour = '#ff0000';
@@ -53,23 +73,40 @@
 		nextGua = gua.buildQian(nextGuaPoint);
 		transformingSolids = createTransformingSolids(perspective);
 		solids = transformingSolids.concat([currentGua, nextGua]);
-		transformations = app.createTransformationObject();
-		autoTransformer = transformations.createAutoYRotationTransformer(transformingSolids);
-		keyboardTransformer = transformations.createKeyboardIDrivenTransformer(transformingSolids);
-
-		perspective.shiftVanishingPointY(shiftHorizon);
+		knife = solids[0];
+		bagua = solids[2];				
+		knifeKeyBoardTransformer = transformations.createKeyboardDrivenTransformer([knife]);
 		
+		perspective.shiftVanishingPointY(shiftHorizon);		
 		diagram.stage.addSolids(solids);
-		diagram.stage.setTransformers([keyboardTransformer]);
 
-				
+		baguaTransformer = transformations.createAutoYRotationTransformer([bagua]);
+		diagram.stage.setTransformers([baguaTransformer]);
+		
 		window.setInterval(function () {
-			 //~ var randomIndex = getRandomNumberBetween(0, 7),
-				 //~ directedTransformer = app.createDirectedRotationTransformer(
-					 //~ transformingSolids, baguaSphere.points[randomIndex]
-				 //~ );
-			//~ 
-			 //~ diagram.stage.setTransformers([directedTransformer]);
-		}, 5000);		
+						
+			//change colour and alpha like this
+			var solidsFromStage = diagram.stage.getSolids();
+			
+			solids[0].primitives.forEach(function (primitive) {
+				//if(primitive.setColour) {
+					//primitive.setColour('#00ff00');					
+				//}
+			});
+			  var randomIndex = getRandomNumberBetween(0, 7);
+				 // directedTransformer = app.createDirectedRotationTransformer(
+					 // transformingSolids, baguaSphere.points[randomIndex]
+				  // );
+
+				 var directedKnifeTransformer = app.createDirectedRotationTransformer(
+					  [knife], baguaSphere.points[randomIndex]
+				  );
+
+
+				  
+			  diagram.stage.setTransformers([directedKnifeTransformer, baguaTransformer]);
+			  
+			  	//var baguaKeyBoardTransformer = transformations.createKeyboardDrivenTransformer([bagua]);
+		}, 10000);		
 	}		
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));

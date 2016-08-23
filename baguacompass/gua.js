@@ -50,12 +50,12 @@
 	
 	function createMiddle(point, isYin, colour) {
 		return isYin ? createYin({x: point.x, y: point.y, z: point.z}, colour) :
-			createYin({x: point.x, y: point.y, z: point.z}, colour);
+			createYang({x: point.x, y: point.y, z: point.z}, colour);
 	}
 
 	function createBottom(point, isYin, colour) {
 		return isYin ? createYin({x: point.x, y: point.y + halfWidth, z: point.z}, colour) :
-			createYin({x: point.x, y: point.y + halfWidth, z: point.z}, colour);
+			createYang({x: point.x, y: point.y + halfWidth, z: point.z}, colour);
 	}
 
 	function buildKun(point) {

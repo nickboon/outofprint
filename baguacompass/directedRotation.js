@@ -7,7 +7,7 @@
 		angle = transformation.angle,
 		angleX = 0,
 		angleY = 0,
-		margin = 2,
+		margin = 1,
 		mover;
 	
 	function setAngles() {			
@@ -35,10 +35,10 @@
 	}
 	
 	function rotateUntillPointMovesToFront() {
+		angleX = angleY = 0;
 		if (!isPointAtFront()) {
 			setAngles();
 			points.forEach(rotate);
-			angleX = angleY = 0;
 		}
 	}
 		
