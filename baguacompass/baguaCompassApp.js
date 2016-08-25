@@ -37,9 +37,9 @@
 		
 		return [
 			cookDingsKnife,
-			spheres.create({x: 0, y: 0, z: 0,}, radius, bladeEdgeColour, fillColour),
+			spheres.createStroke({x: 0, y: 0, z: 0,}, radius, bladeEdgeColour),
 			baguaSphere = app.createBaguaSphere(perspective, 200,
-				guaYinColour, guaYangColour)
+			guaYinColour, guaYangColour)
 		];	
 	}
 	
