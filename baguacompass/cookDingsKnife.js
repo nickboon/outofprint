@@ -3,7 +3,7 @@
 	// config
 	var	defaultLineColour = '#000000',
 		defaultFillColour = '#FFFFFF',
-		defaultAlpha = 1//.8,
+		defaultAlpha = .8,
 	
 	// objects from dependancies			
 		perspective,
