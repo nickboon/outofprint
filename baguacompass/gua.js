@@ -82,6 +82,78 @@
 		};		
 	}
 		
+	function buildKan(point) {
+		var topLine = createTop(point, false, yangColour),
+			middle = createMiddle(point, true, yangColour),		
+			bottom = createBottom(point, false, yangColour),
+			points = topLine.points.concat(middle.points).concat(bottom.points),
+			primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+		return {
+			points: points,
+			primitives: primitives
+		};		
+	}
+
+	function buildXun(point) {
+		var topLine = createTop(point, false, yangColour),
+			middle = createMiddle(point, false, yangColour),		
+			bottom = createBottom(point, true, yangColour),
+			points = topLine.points.concat(middle.points).concat(bottom.points),
+			primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+		return {
+			points: points,
+			primitives: primitives
+		};		
+	}
+
+	function buildDui(point) {
+		var topLine = createTop(point, true, yangColour),
+			middle = createMiddle(point, false, yangColour),		
+			bottom = createBottom(point, false, yangColour),
+			points = topLine.points.concat(middle.points).concat(bottom.points),
+			primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+		return {
+			points: points,
+			primitives: primitives
+		};		
+	}
+
+	function buildLi(point) {
+		var topLine = createTop(point, true, yinColour),
+			middle = createMiddle(point, false, yinColour),		
+			bottom = createBottom(point, true, yinColour),
+			points = topLine.points.concat(middle.points).concat(bottom.points),
+			primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+		return {
+			points: points,
+			primitives: primitives
+		};		
+	}
+
+	function buildGen(point) {
+		var topLine = createTop(point, false, yinColour),
+			middle = createMiddle(point, true, yinColour),		
+			bottom = createBottom(point, true, yinColour),
+			points = topLine.points.concat(middle.points).concat(bottom.points),
+			primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+		return {
+			points: points,
+			primitives: primitives
+		};		
+	}
+
+	function buildZhen(point) {
+		var topLine = createTop(point, true, yinColour),
+			middle = createMiddle(point, true, yinColour),		
+			bottom = createBottom(point, false, yinColour),
+			points = topLine.points.concat(middle.points).concat(bottom.points),
+			primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+		return {
+			points: points,
+			primitives: primitives
+		};		
+	}
+
 	// create and return API for this module
 	app.createGuaObject = function (p, w, n, g, a) {
 		perspective = p;
