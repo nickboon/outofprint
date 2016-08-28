@@ -2,7 +2,6 @@
 /* required diagrams, bagua, fakeSpheres, cookDingsKnife */
 (function (app) {
 	var tranformations,
-		isDisplayVersion,
 		radius = 141.42135623730950488016887242097,			
 		guaYinColour,
 		guaYangColour,
@@ -19,13 +18,24 @@
 	function setInitialOrientationsForKnife(knife) {
 		knife.points.forEach(rotate);		
 	}	
-		
-	function createTransformingSolids(perspective) {
+			
+			
+	function setAlphaTo0(primitive) {
+		if(primitive.setAlpha) {
+			primitive.setAlpha(0);				
+		}
+	}		
+			
+	function hideSolid(solid) {
+		solid.primitives.forEach(setAlphaTo0);
+	} 
+	
+	function createTransformingSolids(perspective, isDisplayVersion) {
 		var lineColour = isDisplayVersion ? '#ff0000': '#ff0000',
 			fillColour = isDisplayVersion ? '#000000': '#ffffff',
 			bladeEdgeColour =  isDisplayVersion ? '#00ff00': '#000000',
 			cookDingsKnife = app.createCookDingsKnife(perspective,
-				lineColour, fillColour),
+				lineColour, fillColour, 0.8),
 			spheres = app.createFakeSpheresObject(perspective),
 			sphereStroke = spheres.createStroke(
 				{x: 0, y: 0, z: 0,}, radius, bladeEdgeColour
@@ -76,7 +86,9 @@
 		gua = app.createGuaObject(
 			perspective, guaWidth, guaYinColour, guaYangColour
 		);
-		transformingSolids = createTransformingSolids(perspective);
+		transformingSolids = createTransformingSolids(
+			perspective, isDisplayVersion
+		);
 		knife = transformingSolids[0];
 		bagua = transformingSolids[2];				
 		
@@ -88,15 +100,7 @@
 		var directedTransformations = app.createDirectedRotationTransformerObject();
 		
 		
-		window.setInterval(function () {						
-
-
-
-			//change colour and alpha like this
-			//var solidsFromStage = diagram.stage.getSolids();
-			
-			//solids[0].primitives.forEach(function (primitive) {
-			//});
+		window.setInterval(function () {									
 			var randomIndex = getRandomNumberBetween(0, 7),
 				rotateToFrontTransformer = directedTransformations
 					.createRotateToPointTransformer(
@@ -107,19 +111,18 @@
 						[knife], knife.points[3], bagua.centers[randomIndex]
 					);
 
-
 			currentGua = gua.buildGua(currentGuaIndex, currentGuaPoint);
 			currentGuaIndex = randomIndex;
 			nextGua = gua.buildGua(randomIndex, nextGuaPoint);
+
+			//hideSolid(knife);
+
 			diagram.stage.setSolids(
 				transformingSolids.concat([currentGua, nextGua])
 			)
-
-
-
 			diagram.stage.setTransformers(
 				[rotateToFrontTransformer, rotateToBaguaTransformer]
 			);			  
-		}, 5000);		
+		}, 1000);		
 	}		
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));
