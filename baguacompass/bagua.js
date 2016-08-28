@@ -352,6 +352,7 @@
 			zhen 	// 7
 		];
 	}
+	
 		
 	// create and return API for this module
 	app.createBaguaSphere = function (p, c, yinColour, yangColour, alpha) {		
@@ -372,7 +373,8 @@
 		return {
 			primitives: createPrimitives(yinColour, yangColour, alpha),
 			points: points,
-			centers: getCenters()
+			centers: getCenters(),
+			getOppositeGuaIndex: getOppositeGuaIndex
 		};
 	};
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));

@@ -50,7 +50,7 @@
 	function getRandomNumberBetween(min, max) {
 		return Math.floor(Math.random() * (max - min + 1) + min);
 	}		
-			
+						
 	app.run = function (i) {
 		var isDisplayVersion = i,	
 			diagram = app.createDefaultFullScreenDiagram(),
@@ -97,11 +97,18 @@
 			//solids[0].primitives.forEach(function (primitive) {
 			//});
 			var randomIndex = getRandomNumberBetween(0, 7),
-				rotateToFrontTransformer = directedTransformations.createRotateToFrontTransformer(  
-					[bagua], bagua.centers[randomIndex]
-				);
+				rotateToFrontTransformer = directedTransformations
+					.createRotateToPointTransformer(
+						[bagua], bagua.centers[randomIndex], {x:0, y: 0}
+					),
+				rotateToBaguaTransformer = directedTransformations
+					.createRotateToPointTransformer(
+						[knife], knife.points[3], bagua.centers[randomIndex]
+					);
 
-			diagram.stage.setTransformers([rotateToFrontTransformer]);			  
+			diagram.stage.setTransformers(
+				[rotateToFrontTransformer, rotateToBaguaTransformer]
+			);			  
 		}, 5000);		
 	}		
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));
