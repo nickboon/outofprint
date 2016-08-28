@@ -75,22 +75,22 @@
 		gua = app.createGuaObject(
 			perspective, guaWidth, guaYinColour, guaYangColour
 		);
-		currentGua = gua.buildKun(currentGuaPoint);
-		nextGua = gua.buildQian(nextGuaPoint);
 		transformingSolids = createTransformingSolids(perspective);
-		solids = transformingSolids.concat([currentGua, nextGua]);
-		knife = solids[0];
-		bagua = solids[2];				
+		knife = transformingSolids[0];
+		bagua = transformingSolids[2];				
 		
 		// Move stage centre up the canvas
 		perspective.shiftVanishingPointY(shiftHorizon);
 				
-		diagram.stage.addSolids(solids);
+		diagram.stage.setSolids(transformingSolids);
 		
 		var directedTransformations = app.createDirectedRotationTransformerObject();
 		
 		
 		window.setInterval(function () {						
+
+
+
 			//change colour and alpha like this
 			//var solidsFromStage = diagram.stage.getSolids();
 			
@@ -105,6 +105,15 @@
 					.createRotateToPointTransformer(
 						[knife], knife.points[3], bagua.centers[randomIndex]
 					);
+
+
+			currentGua = gua.buildKun(currentGuaPoint);
+			nextGua = gua.buildGua(randomIndex, nextGuaPoint);
+			diagram.stage.setSolids(
+				transformingSolids.concat([currentGua, nextGua])
+			)
+
+
 
 			diagram.stage.setTransformers(
 				[rotateToFrontTransformer, rotateToBaguaTransformer]

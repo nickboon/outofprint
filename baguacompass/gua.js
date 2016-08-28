@@ -154,6 +154,28 @@
 		};		
 	}
 
+	function buildGua(index, point) {
+		switch (index) {
+			case 0:
+				return buildKun(point);
+			case 1:
+				return buildQian(point);				
+			case 2:
+				return buildKan(point);
+			case 3:
+				return buildXun(point);
+			case 4:
+				return buildDui(point);
+			case 5:
+				return buildLi(point);
+			case 6:
+				return buildGen(point);
+			case 7:
+				return buildZhen(point);
+		}		
+	}
+
+
 	// create and return API for this module
 	app.createGuaObject = function (p, w, n, g, a) {
 		perspective = p;
@@ -169,7 +191,14 @@
  
 		return {
 			buildKun: buildKun,
-			buildQian: buildQian
+			buildQian: buildQian,
+			buildKan: buildKan,
+			buildXun: buildXun,
+			buildDui: buildDui,
+			buildLi: buildLi,
+			buildGen: buildGen,
+			buildZhen: buildZhen,
+			buildGua: buildGua
 		};
 	};
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));

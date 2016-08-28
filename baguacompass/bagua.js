@@ -373,8 +373,7 @@
 		return {
 			primitives: createPrimitives(yinColour, yangColour, alpha),
 			points: points,
-			centers: getCenters(),
-			getOppositeGuaIndex: getOppositeGuaIndex
+			centers: getCenters()
 		};
 	};
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));
