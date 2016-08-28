@@ -4,7 +4,6 @@
 	var tranformations,
 		isDisplayVersion,
 		radius = 141.42135623730950488016887242097,			
-		baguaSphere,
 		guaYinColour,
 		guaYangColour,
 		transformations = app.createTransformationObject(),
@@ -27,19 +26,24 @@
 			bladeEdgeColour =  isDisplayVersion ? '#00ff00': '#000000',
 			cookDingsKnife = app.createCookDingsKnife(perspective,
 				lineColour, fillColour),
-			spheres = app.createFakeSpheresObject(perspective);
+			spheres = app.createFakeSpheresObject(perspective),
+			sphereStroke = spheres.createStroke(
+				{x: 0, y: 0, z: 0,}, radius, bladeEdgeColour
+			),
+			baguaSphere = app.createBaguaSphere(
+				perspective, 200, guaYinColour, guaYangColour
+			);
 			
-			
+		// give Cook Ding's knife edge a different colour				
 		cookDingsKnife.primitives[0] = cookDingsKnife.createBladeEdge(
 			bladeEdgeColour);	
-		
+	
 		setInitialOrientationsForKnife(cookDingsKnife);
 		
 		return [
-			cookDingsKnife,
-			spheres.createStroke({x: 0, y: 0, z: 0,}, radius, bladeEdgeColour),
-			baguaSphere = app.createBaguaSphere(perspective, 200,
-			guaYinColour, guaYangColour)
+			cookDingsKnife,	// 0
+			sphereStroke,	// 1
+			baguaSphere		// 2
 		];	
 	}
 	
@@ -68,7 +72,9 @@
 
 		guaYinColour =  isDisplayVersion ? '#00ff00': '#000000';
 		guaYangColour = '#ff0000';
-		gua = app.createGuaObject(perspective, guaWidth, guaYinColour, guaYangColour);
+		gua = app.createGuaObject(
+			perspective, guaWidth, guaYinColour, guaYangColour
+		);
 		currentGua = gua.buildKun(currentGuaPoint);
 		nextGua = gua.buildQian(nextGuaPoint);
 		transformingSolids = createTransformingSolids(perspective);
@@ -76,35 +82,26 @@
 		knife = solids[0];
 		bagua = solids[2];				
 		
-		perspective.shiftVanishingPointY(shiftHorizon);		
+		// Move stage centre up the canvas
+		perspective.shiftVanishingPointY(shiftHorizon);
+				
 		diagram.stage.addSolids(solids);
-
-		//baguaTransformer = transformations.createKeyboardDrivenTransformer([bagua]);
-		firstTransformer = transformations.createKeyboardDrivenTransformer([bagua]);
-		diagram.stage.setTransformers([firstTransformer]);
 		
-		window.setInterval(function () {
-						
+		var directedTransformations = app.createDirectedRotationTransformerObject();
+		
+		
+		window.setInterval(function () {						
 			//change colour and alpha like this
-			var solidsFromStage = diagram.stage.getSolids();
+			//var solidsFromStage = diagram.stage.getSolids();
 			
-			solids[0].primitives.forEach(function (primitive) {
-				//if(primitive.setColour) {
-					//primitive.setColour('#00ff00');					
-				//}
-			});
-			var randomIndex = getRandomNumberBetween(0, 7);
-			 // directedTransformer = app.createDirectedRotationTransformer(
-				 // transformingSolids, baguaSphere.points[randomIndex]
-			  // );
+			//solids[0].primitives.forEach(function (primitive) {
+			//});
+			var randomIndex = getRandomNumberBetween(0, 7),
+				rotateToFrontTransformer = directedTransformations.createRotateToFrontTransformer(  
+					[bagua], bagua.centers[randomIndex]
+				);
 
-			 // var directedKnifeTransformer = app.createDirectedRotationTransformer(
-				  // [knife], baguaSphere.points[randomIndex]
-			  // );
-
-
-			//var secondTransformer = transformations.createKeyboardDrivenTransformer([knife]);
-			//diagram.stage.setTransformers([secondTransformer]);			  
-		}, 10000);		
+			diagram.stage.setTransformers([rotateToFrontTransformer]);			  
+		}, 5000);		
 	}		
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));

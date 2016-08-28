@@ -18,27 +18,28 @@
 		getNearestZFromArray = app.createPointsObject().getNearestZFromArray,
 		createLine,
 		points = [],
+		centers = [],
 		cubeWidth,
 		spaceDiagonal,
 		faceDiagonal,
 		radiusOfCircumscripedSphere,
 		angleBetweenWidthAndSpaceDiagonal,
-		tilt;
+		tilt,
+		kun,
+		qian,
+		kan,
+		xun,
+		dui,
+		li,
+		gen,
+		zhen;
 	
 	function getFrontPoint() {
 		return {x: 0, y: 0, z: -zDistance };
 	}
 	
 	function createPrimitives(yinColour, yangColour,  alpha) {
-		var kun,
-			qian,
-			kan,
-			xun,
-			dui,
-			li,
-			gen,
-			zhen,
-			lines = [],
+		var lines = [],
 			newLines = [],
 			i,
 			farMiddleLeft,
@@ -339,6 +340,18 @@
 		return  lines.concat(newLines);
 	}
 
+	function getCenters() {
+		return [
+			kun,	// 0
+			qian,	// 1
+			kan,	// 2
+			xun,	// 3
+			dui,	// 4
+ 			li,		// 5
+			gen,	// 6
+			zhen 	// 7
+		];
+	}
 		
 	// create and return API for this module
 	app.createBaguaSphere = function (p, c, yinColour, yangColour, alpha) {		
@@ -358,7 +371,8 @@
 		
 		return {
 			primitives: createPrimitives(yinColour, yangColour, alpha),
-			points: points
+			points: points,
+			centers: getCenters()
 		};
 	};
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));

@@ -5,58 +5,72 @@
 		rotateAboutX = transformation.rotatePointAboutX,
 		rotateAboutY = transformation.rotatePointAboutY,
 		angle = transformation.angle,
-		angleX = 0,
-		angleY = 0,
-		margin = 1,
-		mover;
+		margin = 2;
 	
-	function setAngles() {			
-		if (mover.y < -margin) {
+	function rotateToFront(points, pointToMove) {
+		var angleX = 0,
+			angleY = 0,
+			i;
+			
+		if (pointToMove.y < -margin) {
 			angleX = angle;
-		} else if (mover.y > margin) {
-			angleX = -angle;			
+		} else if (pointToMove.y > margin) {
+			angleX = -angle;
 		}
 
-		if (mover.x < -margin) {
+		if (pointToMove.x < -margin) {
 			angleY = angle;
-		} else if (mover.x > margin) {
-			angleY = -angle;			
+		} else if (pointToMove.x > margin) {
+			angleY = -angle;
+		}
+		
+		for (i = points.length - 1; i >= 0; i -= 1) {
+			rotateAboutX(points[i], angleX);
+			rotateAboutY(points[i], angleY);
 		}
 	}
 	
-	function rotate(point) {		
-		rotateAboutY(point, angleY);
-		rotateAboutX(point, angleX);
-	}
-	
-	function isPointAtFront() {
-		return mover.x < -margin && mover.x > margin 
-			&& mover.y < -margin && mover.y > margin
-	}
-	
-	function rotateUntillPointMovesToFront() {
-		angleX = angleY = 0;
-		if (!isPointAtFront()) {
-			setAngles();
-			points.forEach(rotate);
+	function getPointsFromSolids(solids) {
+		var points = [],
+			i;
+		
+		for(i = solids.length - 1; i >= 0; i -= 1) {
+			points = points.concat(solids[i].points);
 		}
+		
+		return points;
+	}
+
+	function isPointAtFront(point) {
+		return point.x < -margin && point.x > margin 
+			&& point.y < -margin && point.y > margin
 	}
 		
-	function addPointsToTransformer(solid) {
-		points = points.concat(solid.points);
+	function createTransformFunction(points, pointToMove) {
+		return function () {
+			if (!isPointAtFront(pointToMove)) {
+				rotateToFront(points, pointToMove);
+			}
+		}
 	}
-
-	app.createDirectedRotationTransformer = function (solids, pointToMove) {
-			
+	
+	function createRotateToFrontTransformer(solids, pointToMoveToFront) {			
+		var points;
+					
 		if (solids === 'undefined') {
-			throw "You must an array of solids to be transformed when creating a transformer";
+			throw "You must pass in an array of solids to be transformed when creating a transformer";
 		}
 			
-		solids.forEach(addPointsToTransformer);
-		mover = pointToMove;
+		points = getPointsFromSolids(solids);
 		
 		return {
-			transform: rotateUntillPointMovesToFront
+			transform: createTransformFunction(points, pointToMoveToFront)
+		};
+	}
+	
+	app.createDirectedRotationTransformerObject = function () {
+		return {
+			createRotateToFrontTransformer: createRotateToFrontTransformer	
 		};
 	};
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));

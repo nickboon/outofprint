@@ -19,7 +19,7 @@
 			{x: -50, y: 30, z: 0},		// 0 start curve
 			{x: 80, y: 30, z: 0},		// 1 control 1
 			{x: 130, y: 30, z: 0},		// 2 control 2
-			{x: 180, y: -30, z: 0},		// 3 end curve;
+			{x: 180, y: -30, z: 0},		// 3 end curve (point);
 			{x: -150, y: -30, z: 10},	// 4 front
 			{x: -150, y: 0, z: 7},		// 5
 			{x: -50, y: -10, z: 8},		// 6
