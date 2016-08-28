@@ -64,6 +64,7 @@
 			nextGuaPoint = {x:  + guaDisplayMarginX, y: guaDisplayMarginY, z: 0},
 			currentGua,
 			nextGua,
+			currentGuaIndex = 0,
 			shiftHorizon = -200,
 			knife,
 			bagua,
@@ -107,7 +108,8 @@
 					);
 
 
-			currentGua = gua.buildKun(currentGuaPoint);
+			currentGua = gua.buildGua(currentGuaIndex, currentGuaPoint);
+			currentGuaIndex = randomIndex;
 			nextGua = gua.buildGua(randomIndex, nextGuaPoint);
 			diagram.stage.setSolids(
 				transformingSolids.concat([currentGua, nextGua])
