@@ -32,7 +32,7 @@
 	
 	function createTransformingSolids(perspective, isDisplayVersion) {
 		var lineColour = isDisplayVersion ? '#ff0000': '#ff0000',
-			fillColour = isDisplayVersion ? '#000000': '#ffffff',
+			fillColour = isDisplayVersion ? '#ffffff': '#ffffff',
 			bladeEdgeColour =  isDisplayVersion ? '#00ff00': '#000000',
 			cookDingsKnife = app.createCookDingsKnife(perspective,
 				lineColour, fillColour, 0.8),
@@ -52,8 +52,8 @@
 		
 		return [
 			cookDingsKnife,	// 0
-			sphereStroke,	// 1
-			baguaSphere		// 2
+			baguaSphere		// 1
+			//sphereStroke,	// 2
 		];	
 	}
 	
@@ -90,7 +90,7 @@
 			perspective, isDisplayVersion
 		);
 		knife = transformingSolids[0];
-		bagua = transformingSolids[2];				
+		bagua = transformingSolids[1];				
 		
 		// Move stage centre up the canvas
 		perspective.shiftVanishingPointY(shiftHorizon);
