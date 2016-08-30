@@ -31,7 +31,9 @@
 	} 
 	
 	function createTransformingSolids(perspective, isDisplayVersion) {
+		var lineColour = isDisplayVersion ? '#000000' : 'ff0000',
 			fillColour = isDisplayVersion ? '#ffffff' : '#ffffff',
+			bladeEdgeColour =  isDisplayVersion ? '#000000' : '#000000',
 			cookDingsKnife = app.createCookDingsKnife(perspective,
 				lineColour, fillColour, 0.8),
 			spheres = app.createFakeSpheresObject(perspective),
