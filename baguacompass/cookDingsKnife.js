@@ -1,136 +1,217 @@
-/* requires points perspective drawing colours */
+/* requires points, perspective, colours */
 (function (app) {
-	// config
-	var	defaultLineColour = '#000000',
-		defaultFillColour = '#FFFFFF',
-		defaultAlpha = .8,
-	
-	// objects from dependancies			
-		perspective,
-		drawing,
-		primitives,		
-		colours  = app.createColourObject(),		
-	// module variables	
+	// objects from dependancies 
+	var perspective,
+		getScreenX,
+		getScreenY,
+		colours  = app.createColourObject(), 
 		getNearestZFromArray = app.createPointsObject().getNearestZFromArray,
-		createLine,
-		createCurve,
-		createFill,
+		margin = app.createDirectedRotationTransformerObject().getMargin(),
+	
+	// module variables 
+		lineColour,
+		fillColour,
+		alpha,
 		points = [
-			{x: -50, y: 30, z: 0},		// 0 start curve
-			{x: 80, y: 30, z: 0},		// 1 control 1
-			{x: 130, y: 30, z: 0},		// 2 control 2
-			{x: 180, y: -30, z: 0},		// 3 end curve (point);
-			{x: -150, y: -30, z: 10},	// 4 front
-			{x: -150, y: 0, z: 7},		// 5
-			{x: -50, y: -10, z: 8},		// 6
-			{x: -150, y: -30, z: -10},	// 7 back
-			{x: -150, y: 0, z: -7},		// 8
-			{x: -50, y: -10, z: -8},		// 9
-			// move the end 1px away
-			{x: -151, y: -30, z: 10},	// 10 front
-			{x: -151, y: 0, z: 7},		// 11
-			{x: -151, y: -30, z: -10},	// 12 back
-			{x: -151, y: 0, z: -7}		// 13
-		];
+		{x: -50, y: 30, z: 0}, // 0 start curve
+		{x: 80, y: 30, z: 0}, // 1 control 1
+		{x: 130, y: 30, z: 0}, // 2 control 2
+		{x: 180, y: -30, z: 0}, // 3 end curve (point);
+		{x: -150, y: -30, z: 10}, // 4 front
+		{x: -150, y: 0, z: 7}, // 5
+		{x: -50, y: -10, z: 8}, // 6
+		{x: -150, y: -30, z: -10}, // 7 back
+		{x: -150, y: 0, z: -7}, // 8
+		{x: -50, y: -10, z: -8}, // 9
+		// move the end 1px away
+		{x: -151, y: -30, z: 10}, // 10 front
+		{x: -151, y: 0, z: 7}, // 11
+		{x: -151, y: -30, z: -10}, // 12 back
+		{x: -151, y: 0, z: -7} // 13
+		],
+		knifePoint = points[3];
+		
+	function shouldDisappear() {
+		var deviation = knifePoint.x;
+		return (deviation < margin && deviation > -margin)
+	}
+	
+	function createDisappearingCurve(pointA, pointB, pointC, pointD, colour) {
+		return {
+			points: [pointA, pointB, pointC, pointD],
 
-	function createBladeEdge(lineColour, alpha) {
-		return createCurve(
+			getNearestZ: function getNearestZ() {
+				return Math.min(pointA.z, pointD.z);			
+			},
+			
+			draw: function (context) {
+				if(shouldDisappear()) {
+					return;
+				}
+				
+				context.save();
+				context.beginPath();
+				context.strokeStyle = colours.toRgb(colour, alpha);
+				context.moveTo(getScreenX(pointA), getScreenY(pointA));
+				context.bezierCurveTo(
+					getScreenX(pointB), getScreenY(pointB),
+					getScreenX(pointC), getScreenY(pointC),
+					getScreenX(pointD), getScreenY(pointD)
+				);
+				context.stroke();
+				context.restore();
+			}		
+		};	
+	}
+	
+	function createBladeEdge(colour, alpha) {
+		return createDisappearingCurve(
 			points[0],
 			points[1],
 			points[2],
-			points[3], lineColour, alpha
+			points[3], colour, alpha
 		);
 	}
-		
-	function createSideFill(handlePoints, colour, alpha)	{
+	
+	function createDisappearingLine (pointA, pointB) {
 		return {
-			points: handlePoints.concat([points[0],points[1],points[2],points[3]]),
+			points: [pointA, pointB],
+			
+			getNearestZ: function getNearestZ() {
+				return Math.min(pointA.z, pointB.z);			
+			},
+			
+			draw: function (context) {
+				if(shouldDisappear()) {
+					return;
+				}
+ 
+				context.save();
+				context.beginPath();
+				context.strokeStyle = colours.toRgb(lineColour, alpha);
+				context.moveTo(getScreenX(pointA), getScreenY(pointA));
+				context.lineTo(getScreenX(pointB), getScreenY(pointB));
+				context.stroke();
+				context.restore();
+			}	
+		};			
+	}
+	
+	function createDisappearingFill(points) {
+		return {
+			points: points,
 			
 			getNearestZ: function getNearestZ() {
 				return getNearestZFromArray(points);
 			},
 			
 			draw: function (context) {
-				
+				var lastIndex = points.length - 1,
+					i;
+
+				if(shouldDisappear()) {
+					return;
+				}
+					
 				context.save();
-				context.fillStyle = colours.toRgb(colour, alpha);
+				context.fillStyle = colours.toRgb(fillColour, alpha);
 				context.beginPath();
 				context.moveTo(
-					perspective.getScreenX(points[0]), 
-					perspective.getScreenY(points[0]));
-				context.bezierCurveTo(
-					perspective.getScreenX(points[1]), 
-					perspective.getScreenY(points[1]),
-					perspective.getScreenX(points[2]), 
-					perspective.getScreenY(points[2]),
-					perspective.getScreenX(points[3]), 
-					perspective.getScreenY(points[3])
-				);			
-				context.lineTo(
-					perspective.getScreenX(handlePoints[0]), 
-					perspective.getScreenY(handlePoints[0]));
-				context.lineTo(
-					perspective.getScreenX(handlePoints[1]), 
-					perspective.getScreenY(handlePoints[1]));
-				context.lineTo(
-					perspective.getScreenX(handlePoints[2]), 
-					perspective.getScreenY(handlePoints[2]));				
+					getScreenX(points[lastIndex]), getScreenY(lastIndex)
+				);				
+				for(i = lastIndex ; i >= 0; i -= 1) {
+					context.lineTo(
+						getScreenX(points[i]), getScreenY(points[i])
+					);		
+				}
 				context.closePath();
 				context.fill();
 				context.restore();
-			} 	
-		}		
-	}
-	
-	function createPrimitives(lineColour, fillColour,  alpha) {
-		lineColour = lineColour || defaultLineColour;
-		fillColour = fillColour || defaultFillColour;
-		alpha = alpha || defaultAlpha;
-	
-		return [			
-			createBladeEdge(lineColour, alpha),
-			createLine(points[3], points[4], lineColour, alpha),
-			createLine(points[4], points[5], lineColour, alpha),
-			createLine(points[5], points[6], lineColour, alpha),
-			createLine(points[6], points[0], lineColour, alpha),
-			createLine(points[7], points[8], lineColour, alpha),
-			createLine(points[8], points[9], lineColour, alpha),
-			createLine(points[9], points[0], lineColour, alpha),
-			createLine(points[3], points[7], lineColour, alpha),
-			createLine(points[4], points[7], lineColour, alpha),
-			createLine(points[5], points[8], lineColour, alpha),
-			createLine(points[6], points[9], lineColour, alpha),
-			createLine(points[6], points[9], lineColour, alpha),
-			createFill([points[12], points[10], points[11], points[13]], fillColour),
-			createFill([points[3], points[7], points[4]], fillColour),
-			createFill([points[8], points[5], points[6], points[9]], fillColour),
-			createFill([points[9], points[6], points[0]], fillColour),
-			createSideFill([
-				points[4],
-				points[5],
-				points[6]
-			], fillColour, alpha), // front
-			createSideFill([
-				points[7],
-				points[8],
-				points[9]
-			], fillColour, alpha) // back		
-		];
+			}	
+		};	
 	}
 		
+	function createDisappearingSideFill(handlePoints) {
+		return {
+			
+			points: handlePoints.concat(
+				[points[0], points[1], points[2], points[3]]
+			),
+			
+			getNearestZ: function getNearestZ() {
+				return getNearestZFromArray(points);
+			},
+			
+			draw: function (context) {
+				if(shouldDisappear()) {
+					return;
+				}
+								
+				context.save();
+				context.fillStyle = colours.toRgb(fillColour, alpha);
+				context.beginPath();
+				context.moveTo(
+					getScreenX(points[0]), getScreenY(points[0])
+				); 
+				context.bezierCurveTo(
+					getScreenX(points[1]), getScreenY(points[1]),
+					getScreenX(points[2]), getScreenY(points[2]),
+					getScreenX(points[3]), getScreenY(points[3])
+				); 
+				context.lineTo(
+					getScreenX(handlePoints[0]), 
+					getScreenY(handlePoints[0]));
+				context.lineTo(
+					getScreenX(handlePoints[1]), 
+					getScreenY(handlePoints[1]));
+				context.lineTo(
+					getScreenX(handlePoints[2]), 
+					getScreenY(handlePoints[2])); 
+				context.closePath();
+				context.fill();
+				context.restore();
+			}
+		} 
+	}
+
+	function createPrimitives(lineColour, fillColour,  alpha) {
+		return [ 
+			createBladeEdge(lineColour, alpha),
+			createDisappearingLine(points[3], points[4]),
+			createDisappearingLine(points[4], points[5]),
+			createDisappearingLine(points[5], points[6]),
+			createDisappearingLine(points[6], points[0]),
+			createDisappearingLine(points[7], points[8]),
+			createDisappearingLine(points[8], points[9]),
+			createDisappearingLine(points[9], points[0]),
+			createDisappearingLine(points[3], points[7]),
+			createDisappearingLine(points[4], points[7]),
+			createDisappearingLine(points[5], points[8]),
+			createDisappearingLine(points[6], points[9]),
+			createDisappearingLine(points[6], points[9]),
+			createDisappearingFill([points[12], points[10], points[11], points[13]]),
+			createDisappearingFill([points[3], points[7], points[4]]),
+			createDisappearingFill([points[8], points[5], points[6], points[9]]),
+			createDisappearingFill([points[9], points[6], points[0]]),
+			createDisappearingSideFill([points[4], points[5], points[6]]), // front
+			createDisappearingSideFill([points[7], points[8], points[9]]) // back 
+		];
+	}
+
 	// create and return API for this module
-	app.createCookDingsKnife = function (p, lineColour, fillColour, alpha) {		
+	app.createCookDingsKnife = function (p, l, f, a) { 
 		perspective = p;
-		drawing = app.createDrawingObject(perspective);
-		primitives = app.createPrimitivesObject(drawing);	
-		createLine = primitives.createLine;
-		createCurve = primitives.createCurve;
-		createFill = primitives.createFill;
+		getScreenX = perspective.getScreenX;
+		getScreenY = perspective.getScreenY;
+		lineColour = l;
+		fillColour = f;
+		alpha = a;
 
 		return {
 			points: points,
 			primitives: createPrimitives(lineColour, fillColour, alpha),
-			createBladeEdge: createBladeEdge			
+			createBladeEdge: createBladeEdge 
 		};
 	};
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));
+

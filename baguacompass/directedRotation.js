@@ -83,10 +83,15 @@
 		};
 	}
 	
+	function getMargin () {
+		return margin;
+	}
+	
 	app.createDirectedRotationTransformerObject = function () {
 		return {
 			createRotateToFrontTransformer: createRotateToFrontTransformer,
-			createRotateToPointTransformer:	createRotateToPointTransformer
+			createRotateToPointTransformer:	createRotateToPointTransformer,
+			getMargin: getMargin
 		};
 	};
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));
