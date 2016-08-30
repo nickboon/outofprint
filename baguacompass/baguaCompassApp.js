@@ -31,7 +31,7 @@
 	} 
 	
 	function createTransformingSolids(perspective, isDisplayVersion) {
-		var lineColour = isDisplayVersion ? '#000000' : 'ff0000',
+		var lineColour = isDisplayVersion ? '#000000' : '#ff0000',
 			fillColour = isDisplayVersion ? '#ffffff' : '#ffffff',
 			bladeEdgeColour =  isDisplayVersion ? '#000000' : '#000000',
 			cookDingsKnife = app.createCookDingsKnife(perspective,
@@ -52,8 +52,8 @@
 		
 		return [
 			cookDingsKnife,	// 0
-			baguaSphere		// 1
-			//sphereStroke,	// 2
+			baguaSphere//,		// 1
+			//sphereStroke	// 2
 		];	
 	}
 	
@@ -82,7 +82,7 @@
 			
 
 		guaYinColour =  isDisplayVersion ? '#00ff00': '#000000';
-		guaYangColour = '#ff0000';
+		guaYangColour = isDisplayVersion ? '#ff0000': '#ff0000';
 		gua = app.createGuaObject(
 			perspective, guaWidth, guaYinColour, guaYangColour
 		);
