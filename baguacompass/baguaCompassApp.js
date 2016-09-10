@@ -66,7 +66,9 @@
 			shiftHorizon = -200,
 			knife,
 			bagua,
-			knifeKeyBoardTransformer;
+			knifeKeyBoardTransformer,
+			mapGua,
+			buildGua;
 			
 
 		guaYinColour =  isDisplayVersion ? '#00ff00': '#000000';
@@ -74,41 +76,47 @@
 		bagua = app.createBaguaObject(
 			perspective, guaWidth, guaYinColour, guaYangColour
 		);
+		buildGua = bagua.buildGua;
+		
 		transformingSolids = createTransformingSolids(
 			perspective, isDisplayVersion
 		);
+		
 		knife = transformingSolids[0];
 		baguaCube = transformingSolids[1];				
+		mapGua = baguaCube.mapGua;
 		
 		// Move stage centre up the canvas
 		perspective.shiftVanishingPointY(shiftHorizon);
 				
 		diagram.stage.setSolids(transformingSolids);
 		
-		var directedTransformations = app.createDirectedRotationTransformerObject();
-		
-		
+		var directedTransformations = 
+			app.createDirectedRotationTransformerObject();
+				
 		window.setInterval(function () {									
 			var randomIndex = getRandomNumberBetween(0, 7),
 				rotateToFrontTransformer = directedTransformations
 					.createRotateToPointTransformer(
-						[baguaCube], baguaCube.vertices[randomIndex], {x:0, y: 0}
+						[baguaCube],
+						baguaCube.points[randomIndex],
+						{x: 0, y: 0}
 					),
 				rotateToBaguaTransformer = directedTransformations
 					.createRotateToPointTransformer(
-						[knife], knife.points[3], baguaCube.vertices[randomIndex]
+						[knife], knife.points[3], baguaCube.points[randomIndex]
 					);
 
-			currentGua = bagua.buildGua(currentGuaIndex, currentGuaPoint);
+			currentGua = buildGua(mapGua(currentGuaIndex), currentGuaPoint);
 			currentGuaIndex = randomIndex;
-			nextGua = bagua.buildGua(randomIndex, nextGuaPoint);
+			nextGua = buildGua(mapGua(randomIndex), nextGuaPoint);
 
 			diagram.stage.setSolids(
 				transformingSolids.concat([currentGua, nextGua])
 			)
-			//~ diagram.stage.setTransformers(
-				//~ [rotateToFrontTransformer, rotateToBaguaTransformer]
-			//~ );			  
-		}, 1000);		
+			diagram.stage.setTransformers(
+				[rotateToBaguaTransformer, rotateToFrontTransformer]
+			);			  
+		}, 1000);
 	}		
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));

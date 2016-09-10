@@ -160,23 +160,23 @@
 			};		
 		}
 
-		function buildGua(index, point) {
-			switch (index) {
-				case 0:
+		function buildGua(name, point) {
+			switch (name) {
+				case 'kun':
 					return buildKun(point);
-				case 1:
+				case 'qian':
 					return buildQian(point);				
-				case 2:
+				case 'kan':
 					return buildKan(point);
-				case 3:
+				case 'xun':
 					return buildXun(point);
-				case 4:
+				case 'dui':
 					return buildDui(point);
-				case 5:
+				case 'li':
 					return buildLi(point);
-				case 6:
+				case 'gen':
 					return buildGen(point);
-				case 7:
+				case 'zhen':
 					return buildZhen(point);
 			}		
 		}

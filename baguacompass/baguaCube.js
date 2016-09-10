@@ -8,8 +8,7 @@
 				perspective, guaWidth, yinColour, yangColour, alpha
 			),
 			cubeTransformations = app.createCubeTransformationsObject(cubeWidth),
-			vertices = cubeTransformations.getPoints(),
-			points = [],
+			points = cubeTransformations.getPoints(),
 			primitives = [],
 			frontPoint;		
 
@@ -19,38 +18,31 @@
 		}
 
 		function rotateAboutY(angle) {	
-			vertices.forEach(function (point) {
-					cubeTransformations.rotateAboutY(point, angle);
-			});
 			points.forEach(function (point) {
 					cubeTransformations.rotateAboutY(point, angle);
 			});		
 		}
 				
 		function tilt() {
-			vertices.forEach(cubeTransformations.rotateTiltAngleAboutX);
 			points.forEach(cubeTransformations.rotateTiltAngleAboutX);		
 		}
 
 		function tiltBack() {
-			vertices.forEach(cubeTransformations.rotateMinusTiltAngleAboutX);
 			points.forEach(cubeTransformations.rotateMinusTiltAngleAboutX);		
 		}
 
 		function rotateAlongEdge() {
-			vertices.forEach(cubeTransformations.rotateCubeAlongEdgeAboutX);
 			points.forEach(cubeTransformations.rotateAlongEdgeAboutX);		
 		}
 
 		function rotateAcrossFace() {
-			vertices.forEach(cubeTransformations.rotateAlongFaceDiagonalAboutX);
 			points.forEach(cubeTransformations.rotateAlongFaceDiagonalAboutX);
 		}
 		
 		function bringVertex0ToFront() { 				
 			rotateAboutY(Math.PI / 4);
 			tilt();
-			frontPoint = {x: vertices[0].x, y: vertices[0].y, z: vertices[0].z};
+			frontPoint = {x: points[0].x, y: points[0].y, z: points[0].z};
 		}
 		
 		function bringVertex4Tofront() {
@@ -58,6 +50,31 @@
 			tiltBack();
 			rotateAboutY(Math.PI / 2);
 			tilt();			
+		}
+	
+		function mapGua(vertex) {
+			if (vertex === 'undefined') {
+				throw 'MapGua function must be passed a vertex index (0-7).';
+			}
+			
+			switch(vertex) {
+				case 0: 
+					return 'kun';
+				case 1: 
+					return 'xun';
+				case 2: 
+					return 'gen';
+				case 3: 
+					return 'li';
+				case 4: 
+					return 'dui';
+				case 5: 
+					return 'kan';
+				case 6: 
+					return 'qian';
+				case 7: 
+					return 'zhen';				
+			}
 		}
 		
 		/* default vertices
@@ -107,7 +124,7 @@
 		return {
 			primitives: primitives,
 			points: points,
-			vertices: vertices
+			mapGua: mapGua
 		};
 	};
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));
