@@ -1,8 +1,7 @@
 
 /* required diagrams, bagua, fakeSpheres, cookDingsKnife */
 (function (app) {
-	var tranformations,
-		radius = 141.42135623730950488016887242097,			
+	var radius = 141.42135623730950488016887242097,			
 		guaYinColour,
 		guaYangColour,
 		transformations = app.createTransformationObject(),
@@ -18,18 +17,7 @@
 	function setInitialOrientationsForKnife(knife) {
 		knife.points.forEach(rotate);		
 	}	
-			
-			
-	function setAlphaTo0(primitive) {
-		if(primitive.setAlpha) {
-			primitive.setAlpha(0);				
-		}
-	}		
-			
-	function hideSolid(solid) {
-		solid.primitives.forEach(setAlphaTo0);
-	} 
-	
+							
 	function createTransformingSolids(perspective, isDisplayVersion) {
 		var lineColour = isDisplayVersion ? '#000000' : '#ff0000',
 			fillColour = isDisplayVersion ? '#ffffff' : '#ffffff',
@@ -40,8 +28,8 @@
 			sphereStroke = spheres.createStroke(
 				{x: 0, y: 0, z: 0,}, radius, bladeEdgeColour
 			),
-			baguaSphere = app.createBaguaSphere(
-				perspective, 200, guaYinColour, guaYangColour
+			baguaCube = app.createBaguaCube(
+				perspective, 200, 40, guaYinColour, guaYangColour
 			);
 			
 		// give Cook Ding's knife edge a different colour				
@@ -51,9 +39,9 @@
 		setInitialOrientationsForKnife(cookDingsKnife);
 		
 		return [
-			cookDingsKnife,	// 0
-			baguaSphere//,		// 1
-			//sphereStroke	// 2
+			cookDingsKnife,		// 0
+			baguaCube//,		// 1
+			//sphereStroke		// 2
 		];	
 	}
 	
@@ -83,14 +71,14 @@
 
 		guaYinColour =  isDisplayVersion ? '#00ff00': '#000000';
 		guaYangColour = isDisplayVersion ? '#ff0000': '#ff0000';
-		gua = app.createGuaObject(
+		bagua = app.createBaguaObject(
 			perspective, guaWidth, guaYinColour, guaYangColour
 		);
 		transformingSolids = createTransformingSolids(
 			perspective, isDisplayVersion
 		);
 		knife = transformingSolids[0];
-		bagua = transformingSolids[1];				
+		baguaCube = transformingSolids[1];				
 		
 		// Move stage centre up the canvas
 		perspective.shiftVanishingPointY(shiftHorizon);
@@ -104,25 +92,23 @@
 			var randomIndex = getRandomNumberBetween(0, 7),
 				rotateToFrontTransformer = directedTransformations
 					.createRotateToPointTransformer(
-						[bagua], bagua.centers[randomIndex], {x:0, y: 0}
+						[baguaCube], baguaCube.vertices[randomIndex], {x:0, y: 0}
 					),
 				rotateToBaguaTransformer = directedTransformations
 					.createRotateToPointTransformer(
-						[knife], knife.points[3], bagua.centers[randomIndex]
+						[knife], knife.points[3], baguaCube.vertices[randomIndex]
 					);
 
-			currentGua = gua.buildGua(currentGuaIndex, currentGuaPoint);
+			currentGua = bagua.buildGua(currentGuaIndex, currentGuaPoint);
 			currentGuaIndex = randomIndex;
-			nextGua = gua.buildGua(randomIndex, nextGuaPoint);
-
-			//hideSolid(knife);
+			nextGua = bagua.buildGua(randomIndex, nextGuaPoint);
 
 			diagram.stage.setSolids(
 				transformingSolids.concat([currentGua, nextGua])
 			)
-			diagram.stage.setTransformers(
-				[rotateToFrontTransformer, rotateToBaguaTransformer]
-			);			  
+			//~ diagram.stage.setTransformers(
+				//~ [rotateToFrontTransformer, rotateToBaguaTransformer]
+			//~ );			  
 		}, 1000);		
 	}		
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));

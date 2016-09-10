@@ -1,379 +1,198 @@
-/* requires perspective drawing points transformations */
+/* requires perspective drawing primitives*/
 (function (app) {
 	// config
-	var	width = 40,
-		halfWidth = width / 2,
-		thirdWidth = width /3,
-		zDistance,
-		fullZDistance,
-	// objects from dependancies			
-		perspective,
-		drawing,
-		primitives,		
-		transformations = app.createTransformationObject(),
-		copyAndShift = transformations.copyPointAndShift,
-		copyAndRotate = transformations.copyPointAndRotate,
-		copy = app.createPointsObject().copy,
-	// module variables	
-		getNearestZFromArray = app.createPointsObject().getNearestZFromArray,
-		createLine,
-		points = [],
-		centers = [],
-		cubeWidth,
-		spaceDiagonal,
-		faceDiagonal,
-		radiusOfCircumscripedSphere,
-		angleBetweenWidthAndSpaceDiagonal,
-		tilt,
-		kun,
-		qian,
-		kan,
-		xun,
-		dui,
-		li,
-		gen,
-		zhen;
+	var defaultWidth = 100;
 	
-	function getFrontPoint() {
-		return {x: 0, y: 0, z: -zDistance };
-	}
-	
-	function createPrimitives(yinColour, yangColour,  alpha) {
-		var lines = [],
-			newLines = [],
-			i,
-			farMiddleLeft,
-			farMiddleRight,
-			yinMiddleLeft,
-			yinMiddleRight,
-			yinTopLeft,
-			yinTopRight,
-			yinBottomLeft,
-			yinBottomRight,
-			yangMiddle,
-			yangTop,
-			yangBottom,
-			yangLineTranslationAngle,
-			yinLineTRanslationAngles;
+	app.createBaguaObject = function (perspective, w, yinColour, yangColour, alpha) {
+		var drawing = app.createDrawingObject(perspective),
+			primitives = app.createPrimitivesObject(drawing),	
+			createLine = primitives.createLine,
+			width = w || defaultWidth,
+			halfWidth = width / 2,
+			sixthWidth = width / 6;
 		
-		
-		
-		function setKunAtFront() {
-			farMiddleLeft = copyAndShift(kun, 'x', -halfWidth);
-			farMiddleRight = copyAndShift(farMiddleLeft, 'x', width);
+		function buildYin (point, colour) {
+			var points = [
+				{x: point.x - halfWidth, y: point.y, z: point.z},
+				{x: point.x - sixthWidth, y: point.y, z: point.z},
+				{x: point.x + sixthWidth, y: point.y, z: point.z},
+				{x: point.x + halfWidth, y: point.y, z: point.z}
+			]
+			
+			return {
+				points: points,
+				primitives: [
+					createLine(points[0], points[1], colour, alpha),
+					createLine(points[2], points[3], colour, alpha)				
+				]
+			};			
+		}
 
-			yinMiddleLeft = createLine(
-				farMiddleLeft,
-				copyAndShift(farMiddleLeft, 'x', thirdWidth),
-				yinColour,  alpha
-			);					
-			yinMiddleRight = createLine(
-				farMiddleRight,
-				copyAndShift(farMiddleRight, 'x', -thirdWidth),
-				yinColour,  alpha
-			);					
-			yinTopLeft = createLine(
-				copyAndShift(yinMiddleLeft.points[0], 'y', -halfWidth),
-				copyAndShift(yinMiddleLeft.points[1], 'y', -halfWidth),
-				yinColour,  alpha
-			);					
-			yinTopRight = createLine(
-				copyAndShift(yinMiddleRight.points[0], 'y', -halfWidth),
-				copyAndShift(yinMiddleRight.points[1], 'y', -halfWidth),
-				yinColour,  alpha
-			);
-			yinBottomLeft = createLine(
-				copyAndShift(yinMiddleLeft.points[0], 'y', halfWidth),
-				copyAndShift(yinMiddleLeft.points[1], 'y', halfWidth),
-				yinColour,  alpha
-			);	
-			yinBottomRight = createLine(
-				copyAndShift(yinMiddleRight.points[0], 'y', halfWidth),
-				copyAndShift(yinMiddleRight.points[1], 'y', halfWidth),
-				yinColour,  alpha
-			);				
+		function buildYang(point, colour) {
+			var points = [
+				{x: point.x - halfWidth, y: point.y, z: point.z},
+				{x: point.x + halfWidth, y: point.y, z: point.z}
+			]
+			
+			return {
+				points: points,
+				primitives: [createLine(points[0], points[1], colour, alpha)]
+			};
 		}
 		
-		function setQianAtBack() {
-			yangMiddle = createLine(
-				copyAndShift(farMiddleLeft, 'z', fullZDistance),
-				copyAndShift(farMiddleRight, 'z', fullZDistance),
-				yangColour,  alpha
-			);	
-			yangTop = createLine(
-				copyAndShift(yangMiddle.points[0], 'y', halfWidth),
-				copyAndShift(yangMiddle.points[1], 'y', halfWidth),
-				yangColour,  alpha
-			);	
-			yangBottom = createLine(
-				copyAndShift(yangMiddle.points[0], 'y', -halfWidth),
-				copyAndShift(yangMiddle.points[1], 'y', -halfWidth),
-				yangColour,  alpha
+		function createTop(point, isYin, colour) {
+			return isYin ? buildYin(
+					{x: point.x, y: point.y - halfWidth, z: point.z}, colour
+				) : buildYang(
+					{x: point.x, y: point.y - halfWidth, z: point.z}, colour
+				);
+		}
+		
+		function createMiddle(point, isYin, colour) {
+			return isYin ? buildYin(
+				{x: point.x, y: point.y, z: point.z}, colour
+			) : buildYang(
+				{x: point.x, y: point.y, z: point.z}, colour
 			);
 		}
-				
-		yangLineTranslationAngle = Math.asin(cubeWidth / spaceDiagonal) * 2;
-		yinLineTRanslationAngle = yangLineTranslationAngle + Math.PI;			
-		kun = getFrontPoint();
-		setKunAtFront();
-		setQianAtBack();	
-		
-		// ☷ front centre	
-		lines.push(yinMiddleLeft);
-		lines.push(yinMiddleRight);
-		lines.push(yinTopLeft);
-		lines.push(yinTopRight);
-		lines.push(yinBottomLeft);
-		lines.push(yinBottomRight);
 
-		// ☰ back centre
-		lines.push(yangMiddle);
-		lines.push(yangTop);
-		lines.push(yangBottom);
-		
-		// ☲ back top
-		
-		lines.push(createLine(
-			copyAndRotate(yangTop.points[0], 'x', yangLineTranslationAngle),
-			copyAndRotate(yangTop.points[1], 'x', yangLineTranslationAngle),
-				yangColour,  alpha)
-		);
-		lines.push(createLine(
-			copyAndRotate(yinMiddleLeft.points[0], 'x', yinLineTRanslationAngle),
-			copyAndRotate(yinMiddleLeft.points[1], 'x', yinLineTRanslationAngle),
-				yangColour,  alpha)
-		);
-		lines.push(createLine(
-			copyAndRotate(yinMiddleRight.points[0], 'x', yinLineTRanslationAngle),
-			copyAndRotate(yinMiddleRight.points[1], 'x', yinLineTRanslationAngle),
-				yangColour,  alpha)
-		);
-		lines.push(createLine(
-			copyAndRotate(yangBottom.points[0], 'x', yangLineTranslationAngle),
-			copyAndRotate(yangBottom.points[1], 'x', yangLineTranslationAngle),
-				yangColour,  alpha)
-		);
-		
-		
-		// ☵ front bottom
-		lines.push(createLine(
-			copyAndRotate(yinTopLeft.points[0], 'x', yangLineTranslationAngle),
-			copyAndRotate(yinTopLeft.points[1], 'x', yangLineTranslationAngle),
-				yinColour,  alpha)
-		);
-		lines.push(createLine(
-			copyAndRotate(yinTopRight.points[0], 'x', yangLineTranslationAngle),
-			copyAndRotate(yinTopRight.points[1], 'x', yangLineTranslationAngle),
-				yinColour,  alpha)
-		);
-		lines.push(createLine(
-			copyAndRotate(yangMiddle.points[0], 'x', yinLineTRanslationAngle),
-			copyAndRotate(yangMiddle.points[1], 'x', yinLineTRanslationAngle),
-				yinColour,  alpha)
-		);
-		lines.push(createLine(
-			copyAndRotate(yinBottomLeft.points[0], 'x', yangLineTranslationAngle),
-			copyAndRotate(yinBottomLeft.points[1], 'x', yangLineTranslationAngle),
-				yinColour,  alpha)
-		);
-		lines.push(createLine(
-			copyAndRotate(yinBottomRight.points[0], 'x', yangLineTranslationAngle),
-			copyAndRotate(yinBottomRight.points[1], 'x', yangLineTranslationAngle),
-			yinColour,  alpha)
-		);
-		
-		qian = copyAndRotate(kun, 'x', Math.PI);
-		kan = copyAndRotate(qian, 'x', yangLineTranslationAngle);
-		li = copyAndRotate(kan, 'x', Math.PI);
-		points.push(qian);	// ☷ front centre
-		points.push(li)		// ☵ front bottom
-		points.push(kan);	// ☲ back top
-		points.push(kun);	// ☰ back centre
-		
-		function rotateToNextEdge(point) {
-			transformations.rotatePointAboutX(point, -tilt); 			
-			transformations.rotatePointAboutY(point, Math.PI / 2); 			
-			transformations.rotatePointAboutX(point, tilt); 			
+		function createBottom(point, isYin, colour) {
+			return isYin ? buildYin(
+					{x: point.x, y: point.y + halfWidth, z: point.z}, colour
+				) : buildYang(
+					{x: point.x, y: point.y + halfWidth, z: point.z}, colour
+				);
 		}
 				
-		function rotateToPreviousEdge(point) {
-			transformations.rotatePointAboutX(point, -tilt); 			
-			transformations.rotatePointAboutY(point, -Math.PI / 2); 			
-			transformations.rotatePointAboutX(point, tilt); 			
-		}		
-				
-		for (i = lines.length - 1; i >= 0; i -= 1) {
-			points = points.concat(lines[i].points);
-		}
-
-
-		setKunAtFront();
-		setQianAtBack();	
-		points.forEach(rotateToNextEdge);
-
+		function buildKun(point) {
+			var topLine = createTop(point, true, yinColour, halfWidth, sixthWidth, createLine),
+				middle = createMiddle(point, true, yinColour, halfWidth, sixthWidth, createLine),		
+				bottom = createBottom(point, true, yinColour, halfWidth, sixthWidth, createLine),
+				points = topLine.points.concat(middle.points).concat(bottom.points),
+				primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+			return {
+				points: points,
+				primitives: primitives
+			};
+		}                  
 		
-		// ☶ front centre
-		newLines.push(createLine(
-			 copyAndShift(yangBottom.points[0], 'z', -fullZDistance),
-			 copyAndShift(yangBottom.points[1], 'z', -fullZDistance),
-			 yinColour,  alpha)
-			
-		);
-		newLines.push(createLine(
-			copy(yinMiddleLeft.points[0]),
-			copy(yinMiddleLeft.points[1]),
-			yinColour,  alpha)
-		);
-		newLines.push(createLine(
-			copy(yinMiddleRight.points[0]),
-			copy(yinMiddleRight.points[1]),
-			yinColour,  alpha)
-		);
-		newLines.push(createLine(
-			copy(yinBottomLeft.points[0]),
-			copy(yinBottomLeft.points[1]),
-			yinColour,  alpha)
-		);
-		newLines.push(createLine(
-			copy(yinBottomRight.points[0]),
-			copy(yinBottomRight.points[1]),
-			yinColour,  alpha)
-		);
-				
-		// ☱ back centre
-		newLines.push(createLine(
-			copyAndShift(yinBottomLeft.points[0], 'z', fullZDistance),
-			copyAndShift(yinBottomLeft.points[1], 'z', fullZDistance),
-			yangColour,  alpha)
-		);
-		newLines.push(createLine(
-			copyAndShift(yinBottomRight.points[0], 'z', fullZDistance),
-			copyAndShift(yinBottomRight.points[1], 'z', fullZDistance),
-			yangColour,  alpha)
-		);
-		newLines.push(createLine(
-			copy(yangMiddle.points[0]),
-			copy(yangMiddle.points[1]),
-			yangColour,  alpha)
-		);
-		newLines.push(createLine(
-			copy(yangBottom.points[0]),
-			copy(yangBottom.points[1]),
-			yangColour,  alpha)
-		);
-
-		// ☳ top back
-		newLines.push(createLine(
-			copyAndRotate(yinTopLeft.points[0], 'x', yinLineTRanslationAngle),
-			copyAndRotate(yinTopLeft.points[1], 'x', yinLineTRanslationAngle),
-			yinColour,  alpha)
-		);
-		newLines.push(createLine(
-			copyAndRotate(yinTopRight.points[0], 'x', yinLineTRanslationAngle),
-			copyAndRotate(yinTopRight.points[1], 'x', yinLineTRanslationAngle),
-			yinColour,  alpha)
-		);
-		newLines.push(createLine(
-			copyAndRotate(yinMiddleLeft.points[0], 'x', yinLineTRanslationAngle),
-			copyAndRotate(yinMiddleLeft.points[1], 'x', yinLineTRanslationAngle),
-			yinColour,  alpha)
-		);
-		newLines.push(createLine(
-			copyAndRotate(yinMiddleRight.points[0], 'x', yinLineTRanslationAngle),
-			copyAndRotate(yinMiddleRight.points[1], 'x', yinLineTRanslationAngle),
-			yinColour,  alpha)
-		);
-		newLines.push(createLine(
-			copyAndRotate(yinBottomLeft.points[0], 'x', yinLineTRanslationAngle),
-			copyAndRotate(yinBottomLeft.points[1], 'x', yinLineTRanslationAngle),
-			yinColour,  alpha)
-		);
-		newLines.push(createLine(
-			copyAndRotate(yinBottomRight.points[0], 'x', yinLineTRanslationAngle),
-			copyAndRotate(yinBottomRight.points[1], 'x', yinLineTRanslationAngle),
-			yinColour,  alpha)
-		);
-		newLines.push(createLine(
-			copyAndRotate(yangBottom.points[0], 'x', yangLineTranslationAngle),
-			copyAndRotate(yangBottom.points[1], 'x', yangLineTranslationAngle),
-			yinColour,  alpha)
-		);
-		
-		
-		// ☴ front bottom		
-		newLines.push(createLine(
-			copyAndRotate(yangTop.points[0], 'x', yinLineTRanslationAngle),
-			copyAndRotate(yangTop.points[1], 'x', yinLineTRanslationAngle),
-			yangColour,  alpha)
-		);
-		newLines.push(createLine(
-			copyAndRotate(yangMiddle.points[0], 'x', yinLineTRanslationAngle),
-			copyAndRotate(yangMiddle.points[1], 'x', yinLineTRanslationAngle),
-			yangColour,  alpha)
-		);
-		newLines.push(createLine(
-			copyAndRotate(yinBottomLeft.points[0], 'x', yangLineTranslationAngle),
-			copyAndRotate(yinBottomLeft.points[1], 'x', yangLineTranslationAngle),
-			yangColour,  alpha)
-		);
-		newLines.push(createLine(
-			copyAndRotate(yinBottomRight.points[0], 'x', yangLineTranslationAngle),
-			copyAndRotate(yinBottomRight.points[1], 'x', yangLineTranslationAngle),
-			yangColour,  alpha)
-		);
-		
-		gen = getFrontPoint();
-		dui = copyAndShift(gen, 'z', fullZDistance);
-		zhen = copyAndRotate(dui, 'x', yangLineTranslationAngle);
-		xun = copyAndRotate(gen, 'x', Math.PI);
-		points.push(zhen);
-		points.push(gen);
-		points.push(dui);
-		points.push(xun);
-			
-		for (i = newLines.length - 1; i >= 0; i -= 1) {
-			points = points.concat(newLines[i].points);
+		function buildQian(point) {
+			var topLine = createTop(point, false, yangColour),
+				middle = createMiddle(point, false, yangColour),		
+				bottom = createBottom(point, false, yangColour),
+				points = topLine.points.concat(middle.points).concat(bottom.points),
+				primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+			return {
+				points: points,
+				primitives: primitives
+			};		
 		}
 			
-		//points.forEach(rotateToPreviousEdge);	
-			
-		return  lines.concat(newLines);
-	}
+		function buildKan(point) {
+			var topLine = createTop(point, false, yangColour),
+				middle = createMiddle(point, true, yangColour),		
+				bottom = createBottom(point, false, yangColour),
+				points = topLine.points.concat(middle.points).concat(bottom.points),
+				primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+			return {
+				points: points,
+				primitives: primitives
+			};		
+		}
 
-	function getCenters() {
-		return [
-			kun,	// 0
-			qian,	// 1
-			kan,	// 2
-			xun,	// 3
-			dui,	// 4
- 			li,		// 5
-			gen,	// 6
-			zhen 	// 7
-		];
-	}
-	
-		
-	// create and return API for this module
-	app.createBaguaSphere = function (p, c, yinColour, yangColour, alpha) {		
-		cubeWidth = c;
-		spaceDiagonal = Math.sqrt(3) * cubeWidth,
-		faceDiagonal = Math.sqrt(2) * cubeWidth,
-		radiusOfCircumscripedSphere = Math.sqrt(3) * cubeWidth / 2,
-		angleBetweenWidthAndSpaceDiagonal = Math.atan(faceDiagonal / 200),
-		tilt = (Math.PI / 2) - angleBetweenWidthAndSpaceDiagonal;
-		radius = Math.sqrt(3) * cubeWidth / 2;
-		perspective = p;
-		drawing = app.createDrawingObject(perspective);
-		primitives = app.createPrimitivesObject(drawing);	
-		createLine = primitives.createLine;
-		zDistance = Math.sqrt(Math.pow(radius, 2) - Math.pow(halfWidth, 2));
-		fullZDistance = zDistance * 2;
-		
+		function buildXun(point) {
+			var topLine = createTop(point, false, yangColour),
+				middle = createMiddle(point, false, yangColour),		
+				bottom = createBottom(point, true, yangColour),
+				points = topLine.points.concat(middle.points).concat(bottom.points),
+				primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+			return {
+				points: points,
+				primitives: primitives
+			};		
+		}
+
+		function buildDui(point) {
+			var topLine = createTop(point, true, yangColour),
+				middle = createMiddle(point, false, yangColour),		
+				bottom = createBottom(point, false, yangColour),
+				points = topLine.points.concat(middle.points).concat(bottom.points),
+				primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+			return {
+				points: points,
+				primitives: primitives
+			};		
+		}
+
+		function buildLi(point) {
+			var topLine = createTop(point, true, yinColour),
+				middle = createMiddle(point, false, yinColour),		
+				bottom = createBottom(point, true, yinColour),
+				points = topLine.points.concat(middle.points).concat(bottom.points),
+				primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+			return {
+				points: points,
+				primitives: primitives
+			};		
+		}
+
+		function buildGen(point) {
+			var topLine = createTop(point, false, yinColour),
+				middle = createMiddle(point, true, yinColour),		
+				bottom = createBottom(point, true, yinColour),
+				points = topLine.points.concat(middle.points).concat(bottom.points),
+				primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+			return {
+				points: points,
+				primitives: primitives
+			};		
+		}
+
+		function buildZhen(point) {
+			var topLine = createTop(point, true, yinColour),
+				middle = createMiddle(point, true, yinColour),		
+				bottom = createBottom(point, false, yinColour),
+				points = topLine.points.concat(middle.points).concat(bottom.points),
+				primitives = topLine.primitives.concat(middle.primitives).concat(bottom.primitives);						
+			return {
+				points: points,
+				primitives: primitives
+			};		
+		}
+
+		function buildGua(index, point) {
+			switch (index) {
+				case 0:
+					return buildKun(point);
+				case 1:
+					return buildQian(point);				
+				case 2:
+					return buildKan(point);
+				case 3:
+					return buildXun(point);
+				case 4:
+					return buildDui(point);
+				case 5:
+					return buildLi(point);
+				case 6:
+					return buildGen(point);
+				case 7:
+					return buildZhen(point);
+			}		
+		}
+			
 		return {
-			primitives: createPrimitives(yinColour, yangColour, alpha),
-			points: points,
-			centers: getCenters()
+			buildYin: buildYin,
+			buildYang: buildYang,
+			buildKun: buildKun,
+			buildQian: buildQian,
+			buildKan: buildKan,
+			buildXun: buildXun,
+			buildDui: buildDui,
+			buildLi: buildLi,
+			buildGen, buildGen,
+			buildZhen: buildZhen,
+			buildGua: buildGua
 		};
 	};
 })(window.DIAGRAM_APP || (window.DIAGRAM_APP = {}));
