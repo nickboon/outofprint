@@ -53,13 +53,11 @@
 		var isDisplayVersion = i,	
 			diagram = app.createDefaultFullScreenDiagram(),
 			perspective = diagram.perspective,
-			canvas = app.createCanvasObject(),
-			center = canvas.getCenter(),
-			guaWidth = 140,
+			guaWidth = 0,
 			guaDisplayMarginX = 120,
 			guaDisplayMarginY = radius + 240,
-			currentGuaPoint = {x: - guaDisplayMarginX, y: guaDisplayMarginY, z: 0},
-			nextGuaPoint = {x:  + guaDisplayMarginX, y: guaDisplayMarginY, z: 0},
+			currentGuaPoint,
+			nextGuaPoint,
 			currentGua,
 			nextGua,
 			currentGuaIndex = 0,
@@ -68,8 +66,19 @@
 			bagua,
 			knifeKeyBoardTransformer,
 			mapGua,
-			buildGua;
+			buildGua,
+			isScreenPortrait = (window.innerWidth < window.innerHeight);
+		 
 			
+		if (isScreenPortrait) {
+			currentGuaPoint = {x: -guaDisplayMarginX, y: guaDisplayMarginY, z: 0};
+			nextGuaPoint = {x: guaDisplayMarginX, y: guaDisplayMarginY, z: 0};
+			guaWidth = 140;
+		} else {
+			currentGuaPoint = {x: -guaDisplayMarginY, y: 0, z: 0};
+			nextGuaPoint = {x: guaDisplayMarginY, y: 0, z: 0};
+			guaWidth = 40;			
+		} 
 
 		guaYinColour =  isDisplayVersion ? '#00ff00': '#000000';
 		guaYangColour = isDisplayVersion ? '#ff0000': '#ff0000';
@@ -86,8 +95,10 @@
 		baguaCube = transformingSolids[1];				
 		mapGua = baguaCube.mapGua;
 		
-		// Move stage centre up the canvas
-		perspective.shiftVanishingPointY(shiftHorizon);
+		if (isScreenPortrait) {
+			// Move stage centre up the canvas
+			perspective.shiftVanishingPointY(shiftHorizon);		
+		}
 				
 		diagram.stage.setSolids(transformingSolids);
 		
