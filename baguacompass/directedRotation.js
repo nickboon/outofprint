@@ -1,27 +1,27 @@
 /* requires points transformation */
 (function (app) {
-	var points = [],
-		transformation = app.createTransformationObject(),
-		rotateAboutX = transformation.rotatePointAboutX,
-		rotateAboutY = transformation.rotatePointAboutY,
-		angle = transformation.angle,
-		margin = 2;
+	// config
+	var margin = 2;
 	
 	function rotateToTarget(points, pointToMove, target) {
-		var angleX = 0,
+		var transformation = app.createTransformationObject(),
+			rotateAboutX = transformation.rotatePointAboutX,
+			rotateAboutY = transformation.rotatePointAboutY,
+			incrementAngle = transformation.incrementAngle,
+			angleX = 0,
 			angleY = 0,
 			i;
 			
 		if (pointToMove.y < target.y - margin) {
-			angleX = -angle;
+			angleX = -incrementAngle;
 		} else if (pointToMove.y > target.y + margin) {
-			angleX =  angle;
+			angleX =  incrementAngle;
 		}
 
 		if (pointToMove.x < target.x - margin) {
-			angleY = -angle;
+			angleY = -incrementAngle;
 		} else if (pointToMove.x > target.y + margin) {
-			angleY = angle;
+			angleY = incrementAngle;
 		}
 		
 		for (i = points.length - 1; i >= 0; i -= 1) {
@@ -54,21 +54,6 @@
 		}
 	}
 	
-	function createRotateToFrontTransformer(solids, pointToMove) {			
-		var points,
-			targetPoint = { x: 0, y: 0};
-					
-		if (solids === 'undefined') {
-			throw "You must pass in an array of solids to be transformed when creating a transformer";
-		}
-			
-		points = getPointsFromSolids(solids);
-		
-		return {
-			transform: createTransformFunction(points, pointToMove, targetPoint)
-		};
-	}
-
 	function createRotateToPointTransformer(solids, pointToMove, targetPoint) {			
 		var points;
 					
@@ -83,6 +68,10 @@
 		};
 	}
 	
+	function createRotateToFrontTransformer(solids, pointToMove) {			
+		return createRotateToPointTransformer(solids, pointToMove, {x: 0, y: 0});
+	}
+
 	function getMargin () {
 		return margin;
 	}
