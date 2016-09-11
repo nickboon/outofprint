@@ -25,11 +25,15 @@
 				{x: -151, y: 0, z: 7}, // 11
 				{x: -151, y: -30, z: -10}, // 12 back
 				{x: -151, y: 0, z: -7} // 13
-			];
+			],
+			knifePoint = points[3];
+		
+		function getKnifePoint() {
+			return knifePoint;
+		}
 		
 		function shouldDisappear() {
-			var knifePoint = points[3],
-				deviation = knifePoint.x;
+			var deviation = knifePoint.x;
 				
 			return (deviation < margin && deviation > -margin)
 		}
@@ -198,6 +202,7 @@
 	
 		return {
 			points: points,
+			getKnifePoint: getKnifePoint,
 			primitives: createPrimitives(lineColour, fillColour, alpha),
 			createBladeEdge: createBladeEdge 
 		};

@@ -1,4 +1,4 @@
-/* requires points transformation */
+/* requires transformation */
 (function (app) {
 	// config
 	var margin = 2;
@@ -68,17 +68,12 @@
 		};
 	}
 	
-	function createRotateToFrontTransformer(solids, pointToMove) {			
-		return createRotateToPointTransformer(solids, pointToMove, {x: 0, y: 0});
-	}
-
 	function getMargin () {
 		return margin;
 	}
 	
 	app.createDirectedRotationTransformerObject = function () {
 		return {
-			createRotateToFrontTransformer: createRotateToFrontTransformer,
 			createRotateToPointTransformer:	createRotateToPointTransformer,
 			getMargin: getMargin
 		};
