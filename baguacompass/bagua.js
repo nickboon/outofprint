@@ -181,6 +181,10 @@
 			}		
 		}
 			
+		if (!perspective) {
+			throw 'You need to pass in a perspective object to draw the bagua in 3d.'
+		}
+			
 		return {
 			buildYin: buildYin,
 			buildYang: buildYang,

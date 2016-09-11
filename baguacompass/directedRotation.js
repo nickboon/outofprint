@@ -57,8 +57,8 @@
 	function createRotateToPointTransformer(solids, pointToMove, targetPoint) {			
 		var points;
 					
-		if (solids === 'undefined') {
-			throw "You must pass in an array of solids to be transformed when creating a transformer";
+		if (solids === 'undefined' || !pointToMove || !targetPoint) {
+			throw "You must pass in an array of solids to be transformed, a target point, and a point to rotate to the target when creating a rotate to point transformer.";
 		}
 			
 		points = getPointsFromSolids(solids);

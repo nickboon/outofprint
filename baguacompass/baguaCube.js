@@ -101,6 +101,10 @@
 		 * ☴ xun	1
 		 */
 
+		if (!perspective) {
+			throw 'You need to pass in a perspective object to create a bagua cube.';
+		}
+
 		bringVertex0ToFront();
 		
 		addGua(bagua.buildKun(frontPoint));
