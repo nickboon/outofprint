@@ -2,11 +2,10 @@
 (function (app) {
 	// objects from dependancies 
 	var colours  = app.createColourObject(), 
-		getNearestZFromArray = app.createPointsObject().getNearestZFromArray,
-		margin = app.createDirectedRotationTransformerObject().getMargin();
+		getNearestZFromArray = app.createPointsObject().getNearestZFromArray;
 		
 	// create and return API for this module
-	app.createCookDingsKnife = function (perspective, lineColour, fillColour, alpha) { 
+	app.createlightship = function (perspective, lineColour, fillColour, alpha) { 
 		var getScreenX = perspective.getScreenX,
 			getScreenY = perspective.getScreenY,
 			points = [
